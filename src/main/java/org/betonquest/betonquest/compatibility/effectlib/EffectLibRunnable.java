@@ -58,7 +58,7 @@ public class EffectLibRunnable extends BukkitRunnable {
 
     @Override
     public void run() {
-        if (Bukkit.getCurrentTick() - lastConditionCheckTick >= effectConfiguration.conditionCheckInterval()) {
+        if (Bukkit.getCurrentTick() - lastConditionCheckTick >= effectConfiguration.conditionCheckInterval) {
             activeProfiles = checkActiveEffects();
             lastConditionCheckTick = Bukkit.getCurrentTick();
         }
@@ -68,7 +68,7 @@ public class EffectLibRunnable extends BukkitRunnable {
     private List<OnlineProfile> checkActiveEffects() {
         final List<OnlineProfile> activePlayerEffects = new ArrayList<>();
         for (final OnlineProfile onlineProfile : PlayerConverter.getOnlineProfiles()) {
-            if (!BetonQuest.conditions(onlineProfile, effectConfiguration.conditions())) {
+            if (!BetonQuest.conditions(onlineProfile, effectConfiguration.conditions)) {
                 continue;
             }
             activePlayerEffects.add(onlineProfile);
@@ -78,17 +78,17 @@ public class EffectLibRunnable extends BukkitRunnable {
 
     private void activateEffects(final List<OnlineProfile> activePlayers) {
         for (final OnlineProfile currentPlayer : activePlayers) {
-            if (!effectConfiguration.npcs().isEmpty()) {
+            if (!effectConfiguration.npcs.isEmpty()) {
                 runNPCEffects(currentPlayer, effectConfiguration);
             }
-            if (!effectConfiguration.locations().isEmpty()) {
+            if (!effectConfiguration.locations.isEmpty()) {
                 runLocationEffects(currentPlayer, effectConfiguration);
             }
         }
     }
 
     private void runNPCEffects(final OnlineProfile profile, final EffectConfiguration effect) {
-        for (final Integer npcId : effect.npcs()) {
+        for (final Integer npcId : effect.npcs) {
             final NPC npc = CitizensAPI.getNPCRegistry().getById(npcId);
             final Player player = profile.getPlayer();
 
@@ -97,19 +97,19 @@ public class EffectLibRunnable extends BukkitRunnable {
                 continue;
             }
 
-            EffectLibIntegrator.getEffectManager().start(effect.effectClass(), effect.settings(), new DynamicLocation(npc.getEntity()),
+            EffectLibIntegrator.getEffectManager().start(effect.effectClass, effect.settings, new DynamicLocation(npc.getEntity()),
                     new DynamicLocation(null, null), (ConfigurationSection) null, player);
         }
     }
 
     private void runLocationEffects(final OnlineProfile profile, final EffectConfiguration effect) {
-        for (final CompoundLocation compoundLocation : effect.locations()) {
+        for (final CompoundLocation compoundLocation : effect.locations) {
             final Location location;
             try {
                 location = compoundLocation.getLocation(profile);
-                EffectLibIntegrator.getEffectManager().start(effect.effectClass(), effect.settings(), location, profile.getPlayer());
+                EffectLibIntegrator.getEffectManager().start(effect.effectClass, effect.settings, location, profile.getPlayer());
             } catch (final QuestRuntimeException exception) {
-                log.warn("Error while resolving a location of an EffectLib particle effect of type '" + effect.effectClass() + "'. Check that your location (variables) are correct. Error:", exception);
+                log.warn("Error while resolving a location of an EffectLib particle effect of type '" + effect.effectClass + "'. Check that your location (variables) are correct. Error:", exception);
             }
         }
     }

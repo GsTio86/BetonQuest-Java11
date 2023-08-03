@@ -68,15 +68,15 @@ public class ObjectivePaymentEvent extends Objective implements Listener {
 
     @Override
     public String getProperty(final String name, final Profile profile) {
-        return switch (name.toLowerCase(Locale.ROOT)) {
-            case "amount" -> Double.toString(((PaymentData) dataMap.get(profile)).amount);
-            case "left" -> {
+        switch (name.toLowerCase(Locale.ROOT)) {
+            case "amount": return Double.toString(((PaymentData) dataMap.get(profile)).amount);
+            case "left":
                 final PaymentData data = (PaymentData) dataMap.get(profile);
-                yield Double.toString(data.targetAmount - data.amount);
-            }
-            case "total" -> Double.toString(((PaymentData) dataMap.get(profile)).targetAmount);
-            default -> "";
-        };
+                return Double.toString(data.targetAmount - data.amount);
+
+            case "total": return Double.toString(((PaymentData) dataMap.get(profile)).targetAmount);
+            default: return "";
+        }
     }
 
     public static class PaymentData extends ObjectiveData {

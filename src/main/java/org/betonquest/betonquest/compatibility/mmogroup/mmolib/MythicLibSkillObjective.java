@@ -18,6 +18,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Locale;
+import java.util.stream.Collectors;
 
 /**
  * An objective that is completed when a player activates a MythicLib skill.
@@ -56,7 +57,7 @@ public class MythicLibSkillObjective extends Objective implements Listener {
 
     private Collection<TriggerType> parseTriggerTypes(final String triggerTypeString) throws InstructionParseException {
         final Collection<TriggerType> types = new ArrayList<>();
-        final Collection<String> possibleTypes = TriggerType.values().stream().map(TriggerType::name).toList();
+        final Collection<String> possibleTypes = TriggerType.values().stream().map(TriggerType::name).collect(Collectors.toList());
         final String[] parts = triggerTypeString.toUpperCase(Locale.ROOT).split(",");
         for (final String part : parts) {
             if (!possibleTypes.contains(part)) {

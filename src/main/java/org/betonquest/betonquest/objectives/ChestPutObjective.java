@@ -129,7 +129,8 @@ public class ChestPutObjective extends Objective implements Listener {
                 checkItems(onlineProfile);
             } else {
                 final InventoryHolder holder = event.getInventory().getHolder();
-                if (holder instanceof final DoubleChest doubleChest) {
+                if (holder instanceof DoubleChest) {
+                    final DoubleChest doubleChest = (DoubleChest) holder;
                     final Chest leftChest = (Chest) doubleChest.getLeftSide();
                     final Chest rightChest = (Chest) doubleChest.getRightSide();
                     if (leftChest == null || rightChest == null) {

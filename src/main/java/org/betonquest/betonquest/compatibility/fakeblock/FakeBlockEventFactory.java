@@ -72,12 +72,11 @@ public class FakeBlockEventFactory implements EventFactory {
         final List<String> groupNames = new ArrayList<>();
         Collections.addAll(groupNames, instruction.getArray());
         checkForNotExistingGroups(groupNames);
-        return switch (action.toLowerCase(Locale.ROOT)) {
-            case "hidegroup" -> new HideGroupEvent(groupNames, playerGroupService);
-            case "showgroup" -> new ShowGroupEvent(groupNames, playerGroupService);
-            default ->
-                    throw new InstructionParseException("Unknown action (valid options are: showgroup, hidegroup): " + action);
-        };
+        switch (action.toLowerCase(Locale.ROOT)) {
+            case "hidegroup": return new HideGroupEvent(groupNames, playerGroupService);
+            case "showgroup": return new ShowGroupEvent(groupNames, playerGroupService);
+            default: throw new InstructionParseException("Unknown action (valid options are: showgroup, hidegroup): " + action);
+        }
     }
 
     private void checkForNotExistingGroups(final List<String> groupNames) throws InstructionParseException {

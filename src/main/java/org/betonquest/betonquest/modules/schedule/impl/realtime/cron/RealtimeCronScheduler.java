@@ -17,6 +17,7 @@ import java.util.PriorityQueue;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Supplier;
+import java.util.stream.Collectors;
 
 /**
  * The scheduler for {@link RealtimeCronSchedule}.
@@ -81,7 +82,7 @@ public class RealtimeCronScheduler extends ExecutorServiceScheduler<RealtimeCron
     private void runRebootSchedules() {
         log.debug("Collecting reboot schedules...");
         final List<RealtimeCronSchedule> rebootSchedules = schedules.values().stream()
-                .filter(CronSchedule::shouldRunOnReboot).toList();
+                .filter(CronSchedule::shouldRunOnReboot).collect(Collectors.toList());
         log.debug("Found " + rebootSchedules.size() + " reboot schedules. They will be run on next server tick.");
         rebootSchedules.forEach(this::executeEvents);
     }
@@ -159,7 +160,7 @@ public class RealtimeCronScheduler extends ExecutorServiceScheduler<RealtimeCron
      * @return priority que of missed runs, sorted from old to now
      */
     private PriorityQueue<MissedRun> oldestMissedRuns() {
-        final PriorityQueue<MissedRun> missedRuns = new PriorityQueue<>(schedules.size() + 1, Comparator.comparing(MissedRun::runTime));
+        final PriorityQueue<MissedRun> missedRuns = new PriorityQueue<>(schedules.size() + 1, Comparator.comparing(MissedRun::getRunTime));
         for (final RealtimeCronSchedule schedule : schedules.values()) {
             if (schedule.getCatchup() != CatchupStrategy.NONE) {
                 final Optional<ZonedDateTime> cachedExecutionTime = lastExecutionCache.getLastExecutionTime(schedule.getId())
@@ -190,6 +191,21 @@ public class RealtimeCronScheduler extends ExecutorServiceScheduler<RealtimeCron
      * @param schedule the schedule to which the missed run belongs
      * @param runTime  the time when the missed run should have taken place.
      */
-    record MissedRun(RealtimeCronSchedule schedule, ZonedDateTime runTime) {
+    public class MissedRun {
+        public final RealtimeCronSchedule schedule;
+        public final ZonedDateTime runTime;
+
+        public MissedRun(final RealtimeCronSchedule schedule, final ZonedDateTime runTime) {
+            this.schedule = schedule;
+            this.runTime = runTime;
+        }
+
+        public RealtimeCronSchedule getSchedule() {
+            return schedule;
+        }
+
+        public ZonedDateTime getRunTime() {
+            return runTime;
+        }
     }
 }

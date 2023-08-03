@@ -22,7 +22,10 @@ public interface Saver {
     /**
      * Holds the data and the method of saving them to the database.
      */
-    record Record(UpdateType type, String... args) {
+    class Record {
+        private final UpdateType type;
+        private final String[] args;
+
         /**
          * Creates new Record, which can be saved to the database using
          * {@code Saver.add()}.
@@ -34,5 +37,14 @@ public interface Saver {
             this.type = type;
             this.args = args == null ? null : Arrays.copyOf(args, args.length);
         }
+
+        public UpdateType getType() {
+            return type;
+        }
+
+        public String[] getArgs() {
+            return args;
+        }
     }
+
 }

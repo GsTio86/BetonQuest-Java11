@@ -50,22 +50,24 @@ public class TagPlayerEventFactory implements EventFactory, StaticEventFactory {
     public Event parseEvent(final Instruction instruction) throws InstructionParseException {
         final String action = instruction.next();
         final String[] tags = getTags(instruction);
-        return switch (action.toLowerCase(Locale.ROOT)) {
-            case "add" -> createAddTagEvent(tags);
-            case "delete", "del" -> createDeleteTagEvent(tags);
-            default -> throw new InstructionParseException("Unknown tag action: " + action);
-        };
+        switch (action.toLowerCase(Locale.ROOT)) {
+            case "add": return createAddTagEvent(tags);
+            case "delete":
+            case "del": return createDeleteTagEvent(tags);
+            default: throw new InstructionParseException("Unknown tag action: " + action);
+        }
     }
 
     @Override
     public StaticEvent parseStaticEvent(final Instruction instruction) throws InstructionParseException {
         final String action = instruction.next();
         final String[] tags = getTags(instruction);
-        return switch (action.toLowerCase(Locale.ROOT)) {
-            case "add" -> new DoNothingStaticEvent();
-            case "delete", "del" -> createStaticDeleteTagEvent(tags);
-            default -> throw new InstructionParseException("Unknown tag action: " + action);
-        };
+        switch (action.toLowerCase(Locale.ROOT)) {
+            case "add": return new DoNothingStaticEvent();
+            case "delete":
+            case "del": return createStaticDeleteTagEvent(tags);
+            default: throw new InstructionParseException("Unknown tag action: " + action);
+        }
     }
 
     @NotNull

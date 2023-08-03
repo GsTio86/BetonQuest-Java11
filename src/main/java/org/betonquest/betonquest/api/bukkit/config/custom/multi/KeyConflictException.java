@@ -4,7 +4,6 @@ import org.apache.commons.lang3.tuple.Pair;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.InvalidConfigurationException;
 
-import java.io.Serial;
 import java.util.List;
 import java.util.Map;
 import java.util.SortedSet;
@@ -15,7 +14,7 @@ import java.util.stream.Collectors;
  * This exception represents a conflict with two keys in multiple configurations.
  */
 public class KeyConflictException extends InvalidConfigurationException {
-    @Serial
+    
     private static final long serialVersionUID = 3529254335908123119L;
 
     /**

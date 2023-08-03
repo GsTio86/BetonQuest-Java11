@@ -106,12 +106,12 @@ public class ConfigAccessorImpl implements ConfigAccessor {
     }
 
     private void loadFromObject(final Object input, final YamlConfiguration config) throws IOException, InvalidConfigurationException {
-        if (input instanceof final File file) {
-            config.load(file);
-        } else if (input instanceof final Reader reader) {
-            config.load(reader);
-        } else if (input instanceof final String string) {
-            config.load(string);
+        if (input instanceof File) {
+            config.load((File) input);
+        } else if (input instanceof Reader) {
+            config.load((Reader) input);
+        } else if (input instanceof String) {
+            config.load((String) input);
         }
     }
 

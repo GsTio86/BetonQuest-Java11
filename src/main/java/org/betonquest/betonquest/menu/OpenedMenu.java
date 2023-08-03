@@ -164,9 +164,10 @@ public class OpenedMenu implements Listener {
     @EventHandler
     @SuppressWarnings({"PMD.NPathComplexity", "PMD.CyclomaticComplexity", "PMD.PrematureDeclaration", "PMD.CognitiveComplexity"})
     public void onClick(final InventoryClickEvent event) {
-        if (!(event.getWhoClicked() instanceof final Player player)) {
+        if (!(event.getWhoClicked() instanceof Player)) {
             return;
         }
+        final Player player = (Player) event.getWhoClicked();
         if (!player.equals(onlineProfile.getPlayer())) {
             return;
         }
@@ -227,9 +228,10 @@ public class OpenedMenu implements Listener {
 
     @EventHandler
     public void onClose(final InventoryCloseEvent event) {
-        if (!(event.getPlayer() instanceof final Player player)) {
+        if (!(event.getPlayer() instanceof Player)) {
             return;
         }
+        final Player player = (Player) event.getPlayer();
         if (!player.equals(onlineProfile.getPlayer())) {
             return;
         }

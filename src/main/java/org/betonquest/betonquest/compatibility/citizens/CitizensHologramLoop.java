@@ -60,7 +60,7 @@ public class CitizensHologramLoop extends HologramLoop implements Listener {
         npcHolograms = new ArrayList<>();
         holograms = initialize("npc_holograms");
         followTask = Bukkit.getServer().getScheduler().runTaskTimer(BetonQuest.getInstance(),
-                () -> npcHolograms.stream().filter(NPCHologram::follow)
+                () -> npcHolograms.stream().filter(NPCHologram::isFollow)
                         .forEach(this::updateHologram), 1L, 1L);
         Bukkit.getServer().getPluginManager().registerEvents(this, BetonQuest.getInstance());
     }
@@ -128,14 +128,14 @@ public class CitizensHologramLoop extends HologramLoop implements Listener {
                         }
                         hologram.hideAll();
                         entry.setValue(null);
-                        npcHologram.holograms().remove(hologram);
+                        npcHologram.holograms.remove(hologram);
                         hologram.delete();
                     } else {
-                        final Location location = npc.getStoredLocation().add(npcHologram.vector());
+                        final Location location = npc.getStoredLocation().add(npcHologram.vector);
                         if (hologram == null) {
                             final BetonHologram newHologram = HologramProvider.getInstance().createHologram(location);
                             entry.setValue(newHologram);
-                            npcHologram.holograms().add(newHologram);
+                            npcHologram.holograms.add(newHologram);
                             updateHologram(newHologram);
                         } else {
                             hologram.move(location);
@@ -147,7 +147,7 @@ public class CitizensHologramLoop extends HologramLoop implements Listener {
 
     private void updateHologram(final BetonHologram hologram) {
         holograms.stream()
-                .filter(hologramWrapper -> hologramWrapper.holograms().contains(hologram))
+                .filter(hologramWrapper -> hologramWrapper.holograms.contains(hologram))
                 .forEach(hologramWrapper -> {
                     hologramWrapper.updateVisibility();
                     hologramWrapper.initialiseContent();
@@ -172,7 +172,7 @@ public class CitizensHologramLoop extends HologramLoop implements Listener {
     @EventHandler
     public void onNPCSpawn(final NPCSpawnEvent event) {
         npcHolograms.stream()
-                .filter(npcHologram -> npcHologram.npcHolograms().containsKey(event.getNPC().getId()))
+                .filter(npcHologram -> npcHologram.npcHolograms.containsKey(event.getNPC().getId()))
                 .forEach(hologram -> Bukkit.getServer().getScheduler().runTask(BetonQuest.getInstance(), () -> updateHologram(hologram)));
     }
 
@@ -184,7 +184,7 @@ public class CitizensHologramLoop extends HologramLoop implements Listener {
     @EventHandler
     public void onNPCDespawn(final NPCDespawnEvent event) {
         npcHolograms.stream()
-                .filter(npcHologram -> npcHologram.npcHolograms().containsKey(event.getNPC().getId()))
+                .filter(npcHologram -> npcHologram.npcHolograms.containsKey(event.getNPC().getId()))
                 .forEach(hologram -> Bukkit.getServer().getScheduler().runTask(BetonQuest.getInstance(), () -> updateHologram(hologram)));
     }
 
@@ -196,17 +196,61 @@ public class CitizensHologramLoop extends HologramLoop implements Listener {
     @EventHandler
     public void onNPCTeleport(final NPCTeleportEvent event) {
         npcHolograms.stream()
-                .filter(npcHologram -> npcHologram.npcHolograms().containsKey(event.getNPC().getId()))
+                .filter(npcHologram -> npcHologram.npcHolograms.containsKey(event.getNPC().getId()))
                 .forEach(hologram -> Bukkit.getServer().getScheduler().runTask(BetonQuest.getInstance(), () -> updateHologram(hologram)));
     }
 
-    /**
-     * Link a list of NPC IDs to a list of holograms.
-     *
-     * @param npcHolograms the list of NPC IDs and there linked holograms.
-     * @param holograms    The holograms.
-     */
-    private record NPCHologram(Map<Integer, BetonHologram> npcHolograms, List<BetonHologram> holograms,
-                               Vector vector, boolean follow) {
+    public class NPCHologram {
+        public Map<Integer, BetonHologram> npcHolograms;
+        public List<BetonHologram> holograms;
+        public Vector vector;
+        public boolean follow;
+
+        /**
+         * Link a list of NPC IDs to a list of holograms.
+         *
+         * @param npcHolograms the list of NPC IDs and there linked holograms.
+         * @param holograms    The holograms.
+         */
+        public NPCHologram(Map<Integer, BetonHologram> npcHolograms, List<BetonHologram> holograms,
+                           Vector vector, boolean follow) {
+            this.npcHolograms = npcHolograms;
+            this.holograms = holograms;
+            this.vector = vector;
+            this.follow = follow;
+        }
+
+        public boolean isFollow() {
+            return follow;
+        }
+
+        public List<BetonHologram> getHolograms() {
+            return holograms;
+        }
+
+        public Map<Integer, BetonHologram> getNpcHolograms() {
+            return npcHolograms;
+        }
+
+
+        public Vector getVector() {
+            return vector;
+        }
+
+        public void setFollow(final boolean follow) {
+            this.follow = follow;
+        }
+
+        public void setHolograms(final List<BetonHologram> holograms) {
+            this.holograms = holograms;
+        }
+
+        public void setNpcHolograms(final Map<Integer, BetonHologram> npcHolograms) {
+            this.npcHolograms = npcHolograms;
+        }
+
+        public void setVector(final Vector vector) {
+            this.vector = vector;
+        }
     }
 }

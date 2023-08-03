@@ -76,11 +76,6 @@ public class SilentCommandSender implements CommandSender {
     }
 
     @Override
-    public @NotNull Component name() {
-        return sender.name();
-    }
-
-    @Override
     public boolean isPermissionSet(@NotNull final String name) {
         return sender.isPermissionSet(name);
     }

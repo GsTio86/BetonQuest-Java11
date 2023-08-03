@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 /**
  * Converts the player to the Profile
@@ -60,7 +61,7 @@ public final class PlayerConverter {
 
             @Override
             public boolean equals(final Object obj) {
-                return obj instanceof Profile profile && getProfileUUID().equals(profile.getProfileUUID());
+                return obj instanceof Profile && getProfileUUID().equals(((Profile)obj).getProfileUUID());
             }
 
             @Override
@@ -108,7 +109,7 @@ public final class PlayerConverter {
 
             @Override
             public boolean equals(final Object obj) {
-                return obj instanceof Profile profile && getProfileUUID().equals(profile.getProfileUUID());
+                return obj instanceof Profile && getProfileUUID().equals(((Profile)obj).getProfileUUID());
             }
 
             @Override
@@ -124,6 +125,6 @@ public final class PlayerConverter {
      * @return A list of {@link OnlineProfile}s
      */
     public static List<OnlineProfile> getOnlineProfiles() {
-        return Bukkit.getOnlinePlayers().stream().map(PlayerConverter::getID).toList();
+        return Bukkit.getOnlinePlayers().stream().map(PlayerConverter::getID).collect(Collectors.toList());
     }
 }

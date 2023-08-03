@@ -41,7 +41,7 @@ public class PickRandomEvent implements Event {
         for (final RandomEvent randomEvent : events) {
             resolvedEvents.add(randomEvent.resolveFor(profile));
         }
-        double total = resolvedEvents.stream().mapToDouble(ResolvedRandomEvent::chance).sum();
+        double total = resolvedEvents.stream().mapToDouble(e -> e.chance).sum();
 
         int pick = this.amount == null ? 1 : this.amount.getInt(profile);
         while (pick > 0 && !resolvedEvents.isEmpty()) {
@@ -50,11 +50,11 @@ public class PickRandomEvent implements Event {
             final Iterator<ResolvedRandomEvent> iterator = resolvedEvents.iterator();
             while (iterator.hasNext()) {
                 final ResolvedRandomEvent event = iterator.next();
-                random -= event.chance();
+                random -= event.chance;
                 if (random < 0) {
-                    BetonQuest.event(profile, event.eventID());
+                    BetonQuest.event(profile, event.eventID);
                     iterator.remove();
-                    total -= event.chance();
+                    total -= event.chance;
                     break;
                 }
             }

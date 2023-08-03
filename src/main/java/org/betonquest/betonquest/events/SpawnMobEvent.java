@@ -92,7 +92,8 @@ public class SpawnMobEvent extends QuestEvent {
         final int pAmount = amount.getInt(profile);
         for (int i = 0; i < pAmount; i++) {
             final Entity entity = location.getWorld().spawnEntity(location, type);
-            if (entity instanceof final LivingEntity living) {
+            if (entity instanceof LivingEntity) {
+                final LivingEntity living = (LivingEntity) entity;
                 final EntityEquipment equipment = living.getEquipment();
                 equipment.setHelmet(helmet == null ? null : helmet.generate(1));
                 equipment.setHelmetDropChance(0);
@@ -114,7 +115,8 @@ public class SpawnMobEvent extends QuestEvent {
                                 + item.getAmount().getInt(profile)));
                 dropIndex++;
             }
-            if (name != null && entity instanceof final LivingEntity livingEntity) {
+            if (name != null && entity instanceof LivingEntity) {
+                final LivingEntity livingEntity = (LivingEntity) entity;
                 livingEntity.setCustomName(name);
             }
             if (marked != null) {

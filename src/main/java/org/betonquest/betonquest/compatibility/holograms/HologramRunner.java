@@ -55,8 +55,8 @@ public final class HologramRunner {
      */
     @SuppressWarnings("PMD.CommentDefaultAccessModifier")
     static void addHologram(final HologramWrapper hologram) {
-        RUNNERS.computeIfAbsent(hologram.interval(),
-                        k -> new HologramRunner(hologram.interval()))
+        RUNNERS.computeIfAbsent(hologram.interval,
+                        k -> new HologramRunner(hologram.interval))
                 .addRunnerHologram(hologram);
         hologram.updateVisibility();
         hologram.initialiseContent();
@@ -106,11 +106,11 @@ public final class HologramRunner {
     private void cancelRunner() {
         task.cancel();
         for (final HologramWrapper hologramWrapper : holograms) {
-            for (final BetonHologram betonHologram : hologramWrapper.holograms()) {
+            for (final BetonHologram betonHologram : hologramWrapper.holograms) {
                 betonHologram.hideAll();
                 betonHologram.delete();
             }
-            hologramWrapper.holograms().clear();
+            hologramWrapper.holograms.clear();
         }
         holograms.clear();
     }

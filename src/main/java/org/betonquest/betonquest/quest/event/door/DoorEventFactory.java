@@ -60,13 +60,12 @@ public class DoorEventFactory implements EventFactory, StaticEventFactory {
     private DoorEvent createDoorEvent(final Instruction instruction) throws InstructionParseException {
         final CompoundLocation location = instruction.getLocation();
         final String action = instruction.next();
-        return switch (action.toLowerCase(Locale.ROOT)) {
-            case "on" -> createOpenDoorEvent(location);
-            case "off" -> createCloseDoorEvent(location);
-            case "toggle" -> createToggleDoorEvent(location);
-            default ->
-                    throw new InstructionParseException("Unknown door action (valid options are: on, off, toggle): " + action);
-        };
+        switch (action.toLowerCase(Locale.ROOT)) {
+            case "on": return createOpenDoorEvent(location);
+            case "off": return createCloseDoorEvent(location);
+            case "toggle": return createToggleDoorEvent(location);
+            default: throw new InstructionParseException("Unknown door action (valid options are: on, off, toggle): " + action);
+        }
     }
 
     private DoorEvent createOpenDoorEvent(final CompoundLocation location) {

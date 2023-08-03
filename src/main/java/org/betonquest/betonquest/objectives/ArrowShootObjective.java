@@ -53,9 +53,10 @@ public class ArrowShootObjective extends Objective implements Listener {
         if (arrow.getType() != EntityType.ARROW) {
             return;
         }
-        if (!(arrow.getShooter() instanceof final Player player)) {
+        if (!(arrow.getShooter() instanceof Player)) {
             return;
         }
+        final Player player = (Player) arrow.getShooter();
         final OnlineProfile onlineProfile = PlayerConverter.getID(player);
         if (!containsPlayer(onlineProfile)) {
             return;

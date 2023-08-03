@@ -74,6 +74,7 @@ import java.util.StringJoiner;
 import java.util.TreeMap;
 import java.util.UUID;
 import java.util.logging.Level;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 /**
@@ -805,10 +806,11 @@ public class QuestCommand implements CommandExecutor, SimpleTabCompleter {
 
     private void handleItems(final CommandSender sender, final String... args) {
         // sender must be a player
-        if (!(sender instanceof final Player player)) {
+        if (!(sender instanceof Player)) {
             log.debug("Cannot continue, sender must be player");
             return;
         }
+        final Player player = (Player) sender;
         // and the item name must be specified
         if (args.length < 2) {
             log.debug("Cannot continue, item's name must be supplied");
@@ -1718,14 +1720,13 @@ public class QuestCommand implements CommandExecutor, SimpleTabCompleter {
         }
         for (int i = 5; i < args.length; i++) {
             switch (args[i].toLowerCase(Locale.ROOT)) {
-                case "recursive" -> recursive = true;
-                case "overwrite" -> overwrite = true;
-                default -> {
+                case "recursive": recursive = true; break;
+                case "overwrite": overwrite = true; break;
+                default:
                     if (i > 5) {
                         sendMessage(sender, "unknown_argument");
                         return;
                     }
-                }
             }
         }
         final String githubNamespace = args[1];
@@ -1769,7 +1770,8 @@ public class QuestCommand implements CommandExecutor, SimpleTabCompleter {
                 log.debug(errSummary, e);
             } catch (final Exception e) {
                 sendMessage(sender, "download_failed", e.getClass().getSimpleName() + ": " + e.getMessage());
-                if (sender instanceof final Player player) {
+                if (sender instanceof Player) {
+                    final Player player = (Player) sender;
                     final BetonQuestLogRecord record = new BetonQuestLogRecord(Level.FINE, "", instance);
                     record.setThrown(e);
                     final String msgJson = new ChatFormatter().format(record);
@@ -1783,16 +1785,16 @@ public class QuestCommand implements CommandExecutor, SimpleTabCompleter {
     }
 
     private Optional<List<String>> completeDownload(final String... args) {
-        return switch (args.length) {
-            case 2 -> Optional.of(instance.getPluginConfig().getStringList("download.repo_whitelist"));
-            case 3 -> Optional.of(List.of("main", "refs/heads/", "refs/tags/"));
-            case 4 -> Optional.of(Downloader.ALLOWED_OFFSET_PATHS);
-            case 5 -> Optional.of(List.of("/"));
-            case 6 -> Optional.of(List.of("/", "overwrite", "recursive"));
-            case 7, 8 ->
-                    Optional.of(Stream.of("overwrite", "recursive").filter(tag -> !Arrays.asList(args).contains(tag)).toList());
-            default -> Optional.of(List.of());
-        };
+        switch (args.length) {
+            case 2: return Optional.of(instance.getPluginConfig().getStringList("download.repo_whitelist"));
+            case 3: return Optional.of(List.of("main", "refs/heads/", "refs/tags/"));
+            case 4: return Optional.of(Downloader.ALLOWED_OFFSET_PATHS);
+            case 5: return Optional.of(List.of("/"));
+            case 6: return Optional.of(List.of("/", "overwrite", "recursive"));
+            case 7:
+            case 8 : return Optional.of(Stream.of("overwrite", "recursive").filter(tag -> !Arrays.asList(args).contains(tag)).collect(Collectors.toList()));
+            default: return Optional.of(List.of());
+        }
     }
 
     private Level getLogLevel(final String arg) {

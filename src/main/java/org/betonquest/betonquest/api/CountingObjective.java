@@ -74,15 +74,31 @@ public abstract class CountingObjective extends Objective {
 
     @Override
     public String getProperty(final String name, final Profile profile) {
-        final Integer data = switch (name.toLowerCase(Locale.ROOT)) {
-            case "amount" -> getCountingData(profile).getCompletedAmount();
-            case "left" -> getCountingData(profile).getAmountLeft();
-            case "total" -> getCountingData(profile).getTargetAmount();
-            case "absoluteamount" -> Math.abs(getCountingData(profile).getCompletedAmount());
-            case "absoluteleft" -> Math.abs(getCountingData(profile).getAmountLeft());
-            case "absolutetotal" -> Math.abs(getCountingData(profile).getTargetAmount());
-            default -> null;
-        };
+
+        final Integer data;
+        switch (name.toLowerCase(Locale.ROOT)) {
+            case "amount":
+                data = getCountingData(profile).getCompletedAmount();
+                break;
+            case "left":
+                data = getCountingData(profile).getAmountLeft();
+                break;
+            case "total":
+                data = getCountingData(profile).getTargetAmount();
+                break;
+            case "absoluteamount":
+                data = Math.abs(getCountingData(profile).getCompletedAmount());
+                break;
+            case "absoluteleft":
+                data = Math.abs(getCountingData(profile).getAmountLeft());
+                break;
+            case "absolutetotal":
+                data = Math.abs(getCountingData(profile).getTargetAmount());
+                break;
+            default:
+                data = null;
+                break;
+        }
         return data == null ? "" : data.toString();
     }
 

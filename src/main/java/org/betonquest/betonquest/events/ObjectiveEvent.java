@@ -81,21 +81,22 @@ public class ObjectiveEvent extends QuestEvent {
                 Bukkit.getScheduler().runTaskAsynchronously(betonQuest, () -> {
                     final PlayerData playerData = new PlayerData(profile);
                     switch (action.toLowerCase(Locale.ROOT)) {
-                        case "start", "add" -> playerData.addNewRawObjective(objective);
-                        case "delete", "remove" -> playerData.removeRawObjective(objective);
-                        case "complete", "finish" ->
-                                log.warn(instruction.getPackage(), "Cannot complete objective for " + profile + ", because he is offline!");
-                        default -> {
-                        }
+                        case "start":
+                        case "add": playerData.addNewRawObjective(objective); break;
+                        case "delete":
+                        case "remove": playerData.removeRawObjective(objective); break;
+                        case "complete":
+                        case "finish": log.warn(instruction.getPackage(), "Cannot complete objective for " + profile + ", because he is offline!"); break;
                     }
                 });
             } else {
                 switch (action.toLowerCase(Locale.ROOT)) {
-                    case "start", "add" -> BetonQuest.newObjective(profile, objective);
-                    case "delete", "remove" -> cancelObjectiveForOnlinePlayer(profile, objective);
-                    case "complete", "finish" -> betonQuest.getObjective(objective).completeObjective(profile);
-                    default -> {
-                    }
+                    case "start":
+                    case "add": BetonQuest.newObjective(profile, objective); break;
+                    case "delete":
+                    case "remove": cancelObjectiveForOnlinePlayer(profile, objective); break;
+                    case "complete":
+                    case "finish": betonQuest.getObjective(objective).completeObjective(profile); break;
                 }
             }
         }

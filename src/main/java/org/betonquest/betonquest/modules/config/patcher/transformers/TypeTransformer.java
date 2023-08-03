@@ -29,12 +29,18 @@ public class TypeTransformer implements PatchTransformer {
 
         final String valueString = value.toString();
         switch (type.toLowerCase(Locale.ROOT)) {
-            case "boolean" -> config.set(key, Boolean.valueOf(valueString));
-            case "integer" -> config.set(key, Integer.valueOf(valueString));
-            case "double" -> config.set(key, Double.valueOf(valueString));
-            case "float" -> config.set(key, Float.valueOf(valueString));
-            case "string" -> config.set(key, valueString);
-            default -> throw new PatchException("Unknown type '" + type + "', skipping transformation.");
+            case "boolean":
+                config.set(key, Boolean.valueOf(valueString));
+            case "integer":
+                config.set(key, Integer.valueOf(valueString));
+            case "double":
+                config.set(key, Double.valueOf(valueString));
+            case "float":
+                config.set(key, Float.valueOf(valueString));
+            case "string":
+                config.set(key, valueString);
+            default:
+                throw new PatchException("Unknown type '" + type + "', skipping transformation.");
         }
     }
 }

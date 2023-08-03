@@ -26,6 +26,7 @@ import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.Callable;
+import java.util.stream.Collectors;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
@@ -185,15 +186,14 @@ public class Downloader implements Callable<Boolean> {
         connection.connect();
         final int code = connection.getResponseCode();
         if (code >= RESPONSE_400) {
-            throw switch (code) {
-                case 403 ->
-                        new DownloadFailedException("It looks like too many requests were made to the github api, please wait until you have been unblocked.");
-                case 404 -> new DownloadFailedException("404 Not Found - are namespace and ref name correct?");
-                default -> new DownloadFailedException("github api returned error code " + code);
-            };
+            switch (code) {
+                case 403: throw new DownloadFailedException("It looks like too many requests were made to the github api, please wait until you have been unblocked.");
+                case 404: throw new DownloadFailedException("404 Not Found - are namespace and ref name correct?");
+                default: throw new DownloadFailedException("github api returned error code " + code);
+            }
         }
         try (InputStreamReader reader = new InputStreamReader(connection.getInputStream(), UTF_8)) {
-            final JsonElement object = Optional.ofNullable(JsonParser.parseReader(reader).getAsJsonObject().get("object")).orElseThrow();
+            final JsonElement object = Optional.ofNullable(new JsonParser().parse(reader).getAsJsonObject().get("object")).orElseThrow();
             final Optional<JsonElement> type = Optional.ofNullable(object.getAsJsonObject().get("type"));
             if (type.stream().map(JsonElement::getAsString).noneMatch("commit"::equals)) {
                 throw new DownloadFailedException("ref does not point to a commit");
@@ -416,7 +416,7 @@ public class Downloader implements Callable<Boolean> {
                     packagesAll.stream()
                             .filter(other -> !other.equals(pack))
                             .anyMatch(pack::startsWith)
-            ).toList();
+            ).collect(Collectors.toList());
         }
     }
 

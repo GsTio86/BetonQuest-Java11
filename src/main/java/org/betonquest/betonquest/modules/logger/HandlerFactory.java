@@ -26,7 +26,6 @@ import java.nio.file.attribute.BasicFileAttributes;
 import java.nio.file.attribute.FileTime;
 import java.time.Duration;
 import java.time.Instant;
-import java.time.InstantSource;
 import java.time.temporal.ChronoUnit;
 import java.util.Date;
 import java.util.logging.FileHandler;
@@ -67,10 +66,10 @@ public final class HandlerFactory {
      * @param scheduler     {@link BukkitScheduler} instance
      * @param config        {@link ConfigurationFile} instance
      * @param logFileFolder {@link File} to the log folder
-     * @param instantSource {@link InstantSource} instance
+     * @param instantSource {@link Instant} instance
      * @return a new {@link HistoryHandler}
      */
-    public static HistoryHandler createHistoryHandler(final Plugin plugin, final BukkitScheduler scheduler, final ConfigurationFile config, final File logFileFolder, final InstantSource instantSource) {
+    public static HistoryHandler createHistoryHandler(final Plugin plugin, final BukkitScheduler scheduler, final ConfigurationFile config, final File logFileFolder, final Instant instantSource) {
         final DebugHandlerConfig debugHandlerConfig = new DebugHandlerConfig(config, logFileFolder);
         final LogRecordQueue logQueue = createLogRecordQueue(plugin, scheduler, instantSource, debugHandlerConfig.getExpireAfterMinutes());
         final ResettableHandler targetHandler = createDebugLogFileHandler(debugHandlerConfig.getLogFile(), instantSource);
@@ -79,11 +78,11 @@ public final class HandlerFactory {
         return historyHandler;
     }
 
-    private static ResettableHandler createDebugLogFileHandler(final File logFile, final InstantSource instantSource) {
+    private static ResettableHandler createDebugLogFileHandler(final File logFile, final Instant instantSource) {
         return new ResettableHandler(() -> new LazyHandler(() -> setupFileHandler(logFile, instantSource)));
     }
 
-    private static LogRecordQueue createLogRecordQueue(final Plugin plugin, final BukkitScheduler scheduler, final InstantSource instantSource, final int keepMinutes) {
+    private static LogRecordQueue createLogRecordQueue(final Plugin plugin, final BukkitScheduler scheduler, final Instant instantSource, final int keepMinutes) {
         if (keepMinutes == 0) {
             return new DiscardingLogQueue();
         } else {
@@ -93,7 +92,7 @@ public final class HandlerFactory {
         }
     }
 
-    private static Handler setupFileHandler(final File logFile, final InstantSource instantSource) {
+    private static Handler setupFileHandler(final File logFile, final Instant instantSource) {
         try {
             renameLogFile(logFile, instantSource);
             final FileHandler fileHandler = new FileHandler(logFile.getAbsolutePath());
@@ -107,7 +106,7 @@ public final class HandlerFactory {
         }
     }
 
-    private static void renameLogFile(final File logFile, final InstantSource instantSource) throws IOException {
+    private static void renameLogFile(final File logFile, final Instant instantSource) throws IOException {
         if (logFile.exists()) {
             final String newName = getFileCreationTime(logFile);
             final File newFile = getNewLogFile(logFile.getParentFile(), newName, 1);
@@ -120,7 +119,7 @@ public final class HandlerFactory {
         if (!createFolderAndFile(logFile)) {
             throw new IOException("Could not create new '" + logFile.getName() + "' file!");
         }
-        setFileCreationTime(logFile, instantSource.instant());
+        setFileCreationTime(logFile, instantSource);
     }
 
     private static String getFileCreationTime(final File logFile) throws IOException {

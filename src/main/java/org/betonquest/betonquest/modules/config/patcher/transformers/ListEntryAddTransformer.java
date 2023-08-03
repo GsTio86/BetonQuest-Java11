@@ -31,9 +31,14 @@ public class ListEntryAddTransformer implements PatchTransformer {
 
         final int index;
         switch (position.toUpperCase(Locale.ROOT)) {
-            case "FIRST" -> index = 0;
-            case "LAST" -> index = list.size();
-            default -> index = list.size();
+            case "FIRST":
+                index = 0;
+                break;
+            case "LAST":
+                index = list.size();
+                break;
+            default:
+                index = list.size();
         }
 
         list.add(index, entry);

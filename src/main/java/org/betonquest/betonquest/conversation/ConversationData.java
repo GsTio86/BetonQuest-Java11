@@ -21,6 +21,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 /**
  * Represents the data of the conversation.
@@ -578,11 +579,11 @@ public class ConversationData {
             // Pointers
             pointers = Arrays.stream(GlobalVariableResolver.resolve(pack, conv.getString("pointers", conv.getString("pointer", ""))).split(","))
                     .filter(StringUtils::isNotEmpty)
-                    .map(String::trim).toList();
+                    .map(String::trim).collect(Collectors.toList());
 
             extendLinks = Arrays.stream(GlobalVariableResolver.resolve(pack, conv.getString("extends", conv.getString("extend", ""))).split(","))
                     .filter(StringUtils::isNotEmpty)
-                    .map(String::trim).toList();
+                    .map(String::trim).collect(Collectors.toList());
         }
 
         public String getName() {

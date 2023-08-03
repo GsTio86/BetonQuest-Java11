@@ -16,7 +16,6 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.time.Duration;
 import java.time.Instant;
-import java.time.InstantSource;
 import java.time.temporal.TemporalAmount;
 import java.util.HashMap;
 import java.util.Map;
@@ -67,9 +66,9 @@ public class Updater {
     private final BukkitScheduler scheduler;
 
     /**
-     * The {@link InstantSource} instance.
+     * The {@link Instant} instance.
      */
-    private final InstantSource instantSource;
+    private final Instant instantSource;
 
     /**
      * The last timestamp, when a player was notified.
@@ -101,11 +100,11 @@ public class Updater {
      * @param updateDownloader    The {@link UpdateDownloader} to download new versions
      * @param plugin              The {@link org.bukkit.plugin.Plugin} instance
      * @param scheduler           The {@link BukkitScheduler} instance
-     * @param instantSource       The {@link InstantSource} instance
+     * @param instantSource       The {@link Instant} instance
      */
     public Updater(final BetonQuestLogger log, final UpdaterConfig config, final Version currentVersion,
                    final UpdateSourceHandler updateSourceHandler, final UpdateDownloader updateDownloader,
-                   final BetonQuest plugin, final BukkitScheduler scheduler, final InstantSource instantSource) {
+                   final BetonQuest plugin, final BukkitScheduler scheduler, final Instant instantSource) {
         this.log = log;
         this.config = config;
         this.latest = Pair.of(currentVersion, null);
@@ -160,7 +159,7 @@ public class Updater {
     }
 
     private boolean shouldCheckVersion() {
-        final Instant currentTime = instantSource.instant();
+        final Instant currentTime = instantSource;
         if (lastCheck != null && lastCheck.plus(CHECK_DELAY).isAfter(currentTime)) {
             return false;
         }
@@ -196,7 +195,7 @@ public class Updater {
      */
     public void sendUpdateNotification(final Player player) {
         if (config.isIngameNotification() && updateNotification != null) {
-            final Instant currentTime = instantSource.instant();
+            final Instant currentTime = instantSource;
             if (lastNotification.containsKey(player.getUniqueId()) && lastNotification.get(player.getUniqueId()).plus(NOTIFICATION_DELAY).isAfter(currentTime)) {
                 return;
             }

@@ -17,6 +17,7 @@ import org.bukkit.entity.Player;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 /**
  * Changes the default language for the player
@@ -82,7 +83,7 @@ public class LangCommand implements CommandExecutor, SimpleTabCompleter {
     @Override
     public Optional<List<String>> simpleTabComplete(final CommandSender sender, final Command command, final String alias, final String[] args) {
         if (args.length == 1) {
-            return Optional.of(Config.getLanguages().stream().toList());
+            return Optional.of(Config.getLanguages().stream().collect(Collectors.toList()));
         }
         return Optional.of(Collections.emptyList());
     }

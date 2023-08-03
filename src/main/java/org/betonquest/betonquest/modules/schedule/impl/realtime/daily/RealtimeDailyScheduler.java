@@ -129,7 +129,7 @@ public class RealtimeDailyScheduler extends ExecutorServiceScheduler<RealtimeDai
      * @return queue of missed runs, sorted from old to now
      */
     private PriorityQueue<MissedRun> oldestMissedRuns() {
-        final PriorityQueue<MissedRun> missedRuns = new PriorityQueue<>(schedules.size() + 1, Comparator.comparing(MissedRun::runTime));
+        final PriorityQueue<MissedRun> missedRuns = new PriorityQueue<>(schedules.size() + 1, Comparator.comparing(MissedRun::getRunTime));
         for (final RealtimeDailySchedule schedule : schedules.values()) {
             if (schedule.getCatchup() != CatchupStrategy.NONE) {
                 final Optional<Instant> lastExecutionTime = lastExecutionCache.getLastExecutionTime(schedule.getId());
@@ -157,6 +157,21 @@ public class RealtimeDailyScheduler extends ExecutorServiceScheduler<RealtimeDai
      * @param schedule the schedule to which the missed run belongs
      * @param runTime  the time when the missed run should have taken place.
      */
-    private record MissedRun(RealtimeDailySchedule schedule, Instant runTime) {
+    private class MissedRun {
+        public final RealtimeDailySchedule schedule;
+        public final Instant runTime;
+
+        private MissedRun(final RealtimeDailySchedule schedule, final Instant runTime) {
+            this.schedule = schedule;
+            this.runTime = runTime;
+        }
+
+        public Instant getRunTime() {
+            return runTime;
+        }
+
+        public RealtimeDailySchedule getSchedule() {
+            return schedule;
+        }
     }
 }

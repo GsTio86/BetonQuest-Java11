@@ -127,7 +127,7 @@ public final class ChatFormatter extends Formatter {
          * The plugin that created the log message.
          */
         PLUGIN((params) -> {
-            final String plugin = params.match ? getPluginNameOrShortName(params) : params.otherPluginName();
+            final String plugin = params.match ? getPluginNameOrShortName(params) : params.otherPluginName;
             return Pair.of(plugin, "");
         }),
         /**
@@ -178,7 +178,18 @@ public final class ChatFormatter extends Formatter {
          * @param shortName       A short tag for the own plugin
          * @param match           true when pluginName and otherPluginName do match
          */
-        private record Parameters(String pluginName, String otherPluginName, String shortName, boolean match) {
+        private class Parameters {
+            public final String pluginName;
+            public final String otherPluginName;
+            public final String shortName;
+            public final boolean match;
+
+            private Parameters(final String pluginName, final String otherPluginName, final String shortName, final boolean match) {
+                this.pluginName = pluginName;
+                this.otherPluginName = otherPluginName;
+                this.shortName = shortName;
+                this.match = match;
+            }
         }
     }
 }

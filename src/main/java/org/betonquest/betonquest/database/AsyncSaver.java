@@ -71,7 +71,7 @@ public class AsyncSaver extends Thread implements Listener, Saver {
                 active = true;
             }
             final Record rec = queue.poll();
-            con.updateSQL(rec.type(), rec.args());
+            con.updateSQL(rec.getType(), rec.getArgs());
         }
     }
 

@@ -65,7 +65,7 @@ public class MultiSectionConfiguration extends HandleModificationConfiguration i
         buildKeyIndex(sourceConfigs);
         validateKeyIndex();
         mergeFromKeyIndex();
-        final List<ConfigurationSection> defaultList = sourceConfigs.stream().map(ConfigurationSection::getDefaultSection).filter(Objects::nonNull).toList();
+        final List<ConfigurationSection> defaultList = sourceConfigs.stream().map(ConfigurationSection::getDefaultSection).filter(Objects::nonNull).collect(Collectors.toList());
         if (!defaultList.isEmpty()) {
             original.setDefaults(new MultiSectionConfiguration(defaultList));
         }
@@ -95,7 +95,6 @@ public class MultiSectionConfiguration extends HandleModificationConfiguration i
                 if (keyIndex.containsKey(path)) {
                     final ConfigurationSection config = keyIndex.get(path).get(0);
                     if (config != null && config.isSet(path)) {
-                        config.setComments(getReplacedPath(path, config), comments);
                         unsavedConfigs.add(config);
                     }
                 }
@@ -106,7 +105,6 @@ public class MultiSectionConfiguration extends HandleModificationConfiguration i
                 if (keyIndex.containsKey(path)) {
                     final ConfigurationSection config = keyIndex.get(path).get(0);
                     if (config != null && config.isSet(path)) {
-                        config.setInlineComments(getReplacedPath(path, config), comments);
                         unsavedConfigs.add(config);
                     }
                 }
@@ -184,8 +182,6 @@ public class MultiSectionConfiguration extends HandleModificationConfiguration i
         keyIndex.forEach((key, value) -> {
             final ConfigurationSection config = value.get(0);
             original.set(key, config.get(key));
-            original.setComments(key, config.getComments(key));
-            original.setInlineComments(key, config.getInlineComments(key));
         });
     }
 
@@ -407,7 +403,6 @@ public class MultiSectionConfiguration extends HandleModificationConfiguration i
             if (consumer != null) {
                 consumer.setComment(getAbsolutePath(section, path), comments);
             }
-            section.setComments(path, comments);
         }
 
         @Override
@@ -415,7 +410,6 @@ public class MultiSectionConfiguration extends HandleModificationConfiguration i
             if (consumer != null) {
                 consumer.setInlineComment(getAbsolutePath(section, path), comments);
             }
-            section.setInlineComments(path, comments);
         }
 
         @Override

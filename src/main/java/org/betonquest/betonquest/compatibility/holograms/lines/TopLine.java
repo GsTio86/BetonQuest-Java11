@@ -67,7 +67,7 @@ public class TopLine extends AbstractLine {
                 continue;
             }
             final TopXLine line = topXObject.getEntries().get(i);
-            lines[i] = "§" + colors[0] + (i + 1) + ". §" + colors[1] + line.playerName() + "§" + colors[2] + " - §" + colors[3] + line.count();
+            lines[i] = "§" + colors[0] + (i + 1) + ". §" + colors[1] + line.playerName + "§" + colors[2] + " - §" + colors[3] + line.count;
         }
         return lines;
     }

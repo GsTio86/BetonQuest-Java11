@@ -542,28 +542,6 @@ public class FallbackConfigurationSection implements ConfigurationSection {
         manager.getOriginal().addDefault(path, value);
     }
 
-    @Override
-    public @NotNull
-    List<String> getComments(@NotNull final String path) {
-        return getOriginalOrFallback(path, ConfigurationSection::getComments);
-    }
-
-    @Override
-    public @NotNull
-    List<String> getInlineComments(@NotNull final String path) {
-        return getOriginalOrFallback(path, ConfigurationSection::getInlineComments);
-    }
-
-    @Override
-    public void setComments(@NotNull final String path, @Nullable final List<String> comments) {
-        manager.getOriginal().setComments(path, comments);
-    }
-
-    @Override
-    public void setInlineComments(@NotNull final String path, @Nullable final List<String> comments) {
-        manager.getOriginal().setInlineComments(path, comments);
-    }
-
     /**
      * Gets the original, fallback or default value of the given path using the given function.
      *

@@ -21,7 +21,7 @@ import org.betonquest.betonquest.utils.PlayerConverter;
 import org.betonquest.betonquest.utils.Utils;
 import org.jetbrains.annotations.NotNull;
 
-import java.time.InstantSource;
+import java.time.Instant;
 import java.util.Locale;
 
 /**
@@ -41,7 +41,7 @@ public class JournalEventFactory implements EventFactory, StaticEventFactory {
     /**
      * The instant source to provide to events.
      */
-    private final InstantSource instantSource;
+    private final Instant instantSource;
 
     /**
      * The saver to inject into database-using events.
@@ -55,7 +55,7 @@ public class JournalEventFactory implements EventFactory, StaticEventFactory {
      * @param instantSource instant source to pass on
      * @param saver         database saver to use
      */
-    public JournalEventFactory(final BetonQuestLogger log, final BetonQuest betonQuest, final InstantSource instantSource, final Saver saver) {
+    public JournalEventFactory(final BetonQuestLogger log, final BetonQuest betonQuest, final Instant instantSource, final Saver saver) {
         this.log = log;
         this.betonQuest = betonQuest;
         this.instantSource = instantSource;
@@ -65,22 +65,23 @@ public class JournalEventFactory implements EventFactory, StaticEventFactory {
     @Override
     public Event parseEvent(final Instruction instruction) throws InstructionParseException {
         final String action = instruction.next();
-        return switch (action.toLowerCase(Locale.ROOT)) {
-            case "update" -> createJournalUpdateEvent();
-            case "add" -> createJournalAddEvent(instruction);
-            case "delete" -> createJournalDeleteEvent(instruction);
-            default -> throw new InstructionParseException("Unknown journal action: " + action);
-        };
+        switch (action.toLowerCase(Locale.ROOT)) {
+            case "update": return createJournalUpdateEvent();
+            case "add": return createJournalAddEvent(instruction);
+            case "delete": return createJournalDeleteEvent(instruction);
+            default: throw new InstructionParseException("Unknown journal action: " + action);
+        }
     }
 
     @Override
     public StaticEvent parseStaticEvent(final Instruction instruction) throws InstructionParseException {
         final String action = instruction.next();
-        return switch (action.toLowerCase(Locale.ROOT)) {
-            case "update", "add" -> new DoNothingStaticEvent();
-            case "delete" -> createStaticJournalDeleteEvent(instruction);
-            default -> throw new InstructionParseException("Unknown journal action: " + action);
-        };
+        switch (action.toLowerCase(Locale.ROOT)) {
+            case "update":
+            case "add": return new DoNothingStaticEvent();
+            case "delete": return createStaticJournalDeleteEvent(instruction);
+            default: throw new InstructionParseException("Unknown journal action: " + action);
+        }
     }
 
     @NotNull

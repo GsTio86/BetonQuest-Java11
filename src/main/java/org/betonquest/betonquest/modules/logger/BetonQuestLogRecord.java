@@ -5,7 +5,6 @@ import org.bukkit.plugin.Plugin;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.io.Serial;
 import java.util.Optional;
 import java.util.logging.Level;
 import java.util.logging.LogRecord;
@@ -14,7 +13,7 @@ import java.util.logging.LogRecord;
  * Custom {@link LogRecord} for BetonQuest that adds a {@link Plugin} name and {@link QuestPackage} name.
  */
 public class BetonQuestLogRecord extends LogRecord {
-    @Serial
+    
     private static final long serialVersionUID = -7094531905051980356L;
 
     /**

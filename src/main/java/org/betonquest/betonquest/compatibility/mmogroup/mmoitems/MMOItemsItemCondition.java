@@ -29,7 +29,7 @@ public class MMOItemsItemCondition extends Condition {
         final String type = instruction.next();
         itemType = typeManager.get(type);
         if (itemType == null) {
-            throw new InstructionParseException("The item type '%s' does not exist.".formatted(type));
+            throw new InstructionParseException(String.format("The item type '%s' does not exist.", type));
         }
         itemID = instruction.next();
 

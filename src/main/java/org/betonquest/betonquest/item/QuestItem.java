@@ -29,6 +29,7 @@ import org.bukkit.potion.PotionEffect;
 
 import java.util.*;
 import java.util.Map.Entry;
+import java.util.stream.Collectors;
 
 /**
  * Represents an item handled by the configuration.
@@ -51,7 +52,7 @@ public class QuestItem {
 
     private final BookHandler book = new BookHandler();
 
-    private final HeadHandler head = HeadHandler.getServerInstance();
+    //private final HeadHandler head = HeadHandler.getServerInstance();
 
     private final ColorHandler color = new ColorHandler();
 
@@ -106,53 +107,54 @@ public class QuestItem {
             final String data = getArgumentData(part);
 
             switch (argumentName) {
-                case "durability" -> durability.set(data);
-                case "enchants" -> enchants.set(data);
-                case "enchants-containing" -> enchants.setNotExact();
-                case "name" -> name.set(data);
-                case "lore" -> lore.set(data);
-                case "lore-containing" -> lore.setNotExact();
-                case "unbreakable" -> {
+                case "durability": durability.set(data); break;
+                case "enchants":  enchants.set(data); break;
+                case "enchants-containing" :  enchants.setNotExact(); break;
+                case "name" :  name.set(data); break;
+                case "lore":  lore.set(data); break;
+                case "lore-containing" :  lore.setNotExact(); break;
+                case "unbreakable":
                     if ("unbreakable".equals(data)) {
                         unbreakable.set("true");
                     } else {
                         unbreakable.set(data);
                     }
-                }
-                case "custom-model-data" -> customModelData.parse(data);
-                case "no-custom-model-data" -> customModelData.forbid();
-                case "title" -> book.setTitle(data);
-                case "author" -> book.setAuthor(data);
-                case "text" -> book.setText(data);
-                case "type" -> potion.setType(data);
-                case "extended" -> {
+                    break;
+                case "custom-model-data": customModelData.parse(data); break;
+                case "no-custom-model-data":  customModelData.forbid(); break;
+                case "title":  book.setTitle(data); break;
+                case "author":  book.setAuthor(data); break;
+                case "text" :  book.setText(data); break;
+                case "type" :  potion.setType(data); break;
+                case "extended":
                     if ("extended".equals(data)) {
                         potion.setExtended("true");
                     } else {
                         potion.setExtended(data);
                     }
-                }
-                case "upgraded" -> {
+                    break;
+                case "upgraded" :
                     if ("upgraded".equals(data)) {
                         potion.setUpgraded("true");
                     } else {
                         potion.setUpgraded(data);
                     }
-                }
-                case "effects" -> potion.setCustom(data);
-                case "effects-containing" -> potion.setNotExact();
-                case HeadHandler.META_OWNER -> head.setOwner(data);
-                case HeadHandler.META_PLAYER_ID -> head.setPlayerId(data);
-                case HeadHandler.META_TEXTURE -> head.setTexture(data);
-                case "color" -> color.set(data);
-                case "firework" -> firework.setEffects(data);
-                case "power" -> firework.setPower(data);
-                case "firework-containing" -> firework.setNotExact();
-                case "flags" -> flags.parse(data);
+                    break;
+                case "effects":  potion.setCustom(data); break;
+                case "effects-containing" :  potion.setNotExact(); break;
+
+                //case HeadHandler.META_OWNER :  head.setOwner(data); break;
+                //case HeadHandler.META_PLAYER_ID :  head.setPlayerId(data); break;
+                //case HeadHandler.META_TEXTURE :  head.setTexture(data); break;
+
+                case "color":  color.set(data); break;
+                case "firework":  firework.setEffects(data); break;
+                case "power":  firework.setPower(data); break;
+                case "firework-containing" :  firework.setNotExact(); break;
+                case "flags": flags.parse(data); break;
                 //catch empty string caused by multiple whitespaces in instruction split
-                case "" -> {
-                }
-                default -> throw new InstructionParseException("Unknown argument: " + argumentName);
+                case "":
+                default: throw new InstructionParseException("Unknown argument: " + argumentName);
             }
         }
     }
@@ -208,7 +210,8 @@ public class QuestItem {
             if (meta.hasCustomModelData()) {
                 customModelData = " custom-model-data:" + meta.getCustomModelData();
             }
-            if (meta instanceof final BookMeta bookMeta) {
+            if (meta instanceof  BookMeta) {
+                final BookMeta bookMeta = (BookMeta) meta;
                 if (bookMeta.hasAuthor()) {
                     author = " author:" + bookMeta.getAuthor().replace(" ", "_");
                 }
@@ -229,7 +232,8 @@ public class QuestItem {
                     text = " text:" + strBldr.substring(0, strBldr.length() - 1);
                 }
             }
-            if (meta instanceof final PotionMeta potionMeta) {
+            if (meta instanceof PotionMeta) {
+                final PotionMeta potionMeta = (PotionMeta) meta;
                 final PotionData pData = potionMeta.getBasePotionData();
                 effects = " type:" + pData.getType() + (pData.isExtended() ? " extended" : "")
                         + (pData.isUpgraded() ? " upgraded" : "");
@@ -243,21 +247,29 @@ public class QuestItem {
                     effects += " effects:" + string.substring(0, string.length() - 1);
                 }
             }
-            if (meta instanceof final LeatherArmorMeta armorMeta
-                    && !armorMeta.getColor().equals(Bukkit.getServer().getItemFactory().getDefaultLeatherColor())) {
-                final DyeColor dyeColor = DyeColor.getByColor(armorMeta.getColor());
-                color = " color:" + (dyeColor == null ? '#' + Integer.toHexString(armorMeta.getColor().asRGB()) : dyeColor.toString());
-            }
-            if (meta instanceof final EnchantmentStorageMeta storageMeta && storageMeta.hasStoredEnchants()) {
-                final StringBuilder string = new StringBuilder();
-                for (final Enchantment enchant : storageMeta.getStoredEnchants().keySet()) {
-                    string.append(enchant.getName()).append(':').append(storageMeta.getStoredEnchants().get(enchant)).append(',');
+            if (meta instanceof LeatherArmorMeta) {
+                final LeatherArmorMeta armorMeta = (LeatherArmorMeta) meta;
+                if (!armorMeta.getColor().equals(Bukkit.getServer().getItemFactory().getDefaultLeatherColor())) {
+                    final DyeColor dyeColor = DyeColor.getByColor(armorMeta.getColor());
+                    color = " color:" + (dyeColor == null ? '#' + Integer.toHexString(armorMeta.getColor().asRGB()) : dyeColor.toString());
                 }
-                enchants = " enchants:" + string.substring(0, string.length() - 1);
             }
+            if (meta instanceof EnchantmentStorageMeta) {
+                EnchantmentStorageMeta storageMeta = (EnchantmentStorageMeta) meta;
+                if (storageMeta.hasStoredEnchants()) {
+                    final StringBuilder string = new StringBuilder();
+                    for (final Enchantment enchant : storageMeta.getStoredEnchants().keySet()) {
+                        string.append(enchant.getName()).append(':').append(storageMeta.getStoredEnchants().get(enchant)).append(',');
+                    }
+                    enchants = " enchants:" + string.substring(0, string.length() - 1);
+                }
+
+            }
+            /*
             if (meta instanceof SkullMeta) {
                 skull = HeadHandler.serializeSkullMeta((SkullMeta) meta);
             }
+             */
             if (meta instanceof FireworkMeta) {
                 final FireworkMeta fireworkMeta = (FireworkMeta) meta;
                 if (fireworkMeta.hasEffects()) {
@@ -306,7 +318,7 @@ public class QuestItem {
                 }
             }
             if (meta.getItemFlags().size() > 0) {
-                flags = " flags:" + String.join(",", meta.getItemFlags().stream().map(ItemFlag::name).sorted().toList());
+                flags = " flags:" + String.join(",", meta.getItemFlags().stream().map(ItemFlag::name).sorted().collect(Collectors.toList()));
             }
         }
         // put it all together in a single string
@@ -341,9 +353,10 @@ public class QuestItem {
 
     @Override
     public boolean equals(final Object other) {
-        if (!(other instanceof final QuestItem item)) {
+        if (!(other instanceof QuestItem)) {
             return false;
         }
+        final QuestItem item = (QuestItem) other;
         return item.selector.equals(selector)
                 && item.durability.equals(durability)
                 && item.unbreakable.equals(unbreakable)
@@ -352,7 +365,7 @@ public class QuestItem {
                 && item.name.equals(name)
                 && item.potion.equals(potion)
                 && item.book.equals(book)
-                && item.head.equals(head)
+                //&& item.head.equals(head)
                 && item.color.equals(color)
                 && item.firework.equals(firework)
                 && item.customModelData.equals(customModelData)
@@ -361,7 +374,7 @@ public class QuestItem {
 
     @Override
     public int hashCode() {
-        return Objects.hash(selector, durability, name, lore, enchants, unbreakable, potion, book, head, color, firework, customModelData, flags);
+        return Objects.hash(selector, durability, name, lore, enchants, unbreakable, potion, book, color, firework, customModelData, flags);
     }
 
     /**
@@ -405,7 +418,8 @@ public class QuestItem {
             return false;
         }
         // advanced meta checks
-        if (meta instanceof final EnchantmentStorageMeta enchantMeta) {
+        if (meta instanceof EnchantmentStorageMeta) {
+            final EnchantmentStorageMeta enchantMeta = (EnchantmentStorageMeta) meta;
             if (!enchants.check(enchantMeta.getStoredEnchants())) {
                 return false;
             }
@@ -414,7 +428,8 @@ public class QuestItem {
                 return false;
             }
         }
-        if (meta instanceof final PotionMeta potionMeta) {
+        if (meta instanceof PotionMeta) {
+            final PotionMeta potionMeta = (PotionMeta) meta;
             if (!potion.checkBase(potionMeta.getBasePotionData())) {
                 return false;
             }
@@ -434,12 +449,14 @@ public class QuestItem {
                 return false;
             }
         }
+        /*
         if (meta instanceof SkullMeta) {
             final SkullMeta skullMeta = (SkullMeta) item.getItemMeta();
             if (!head.check(skullMeta)) {
                 return false;
             }
         }
+         */
         if (meta instanceof LeatherArmorMeta) {
             final LeatherArmorMeta armorMeta = (LeatherArmorMeta) item.getItemMeta();
             if (!color.check(armorMeta.getColor())) {
@@ -499,7 +516,8 @@ public class QuestItem {
         if (customModelData.getExistence() == Existence.REQUIRED) {
             meta.setCustomModelData(customModelData.get());
         }
-        if (meta instanceof final EnchantmentStorageMeta enchantMeta) {
+        if (meta instanceof EnchantmentStorageMeta) {
+            final EnchantmentStorageMeta enchantMeta = (EnchantmentStorageMeta) meta;
             // why no bulk adding method?!
             final Map<Enchantment, Integer> map = enchants.get();
             for (final Entry<Enchantment, Integer> e : map.entrySet()) {
@@ -511,21 +529,26 @@ public class QuestItem {
                 meta.addEnchant(e.getKey(), e.getValue(), true);
             }
         }
-        if (meta instanceof final PotionMeta potionMeta) {
+        if (meta instanceof PotionMeta) {
+            final PotionMeta potionMeta = (PotionMeta) meta;
             potionMeta.setBasePotionData(potion.getBase());
             for (final PotionEffect effect : potion.getCustom()) {
                 potionMeta.addCustomEffect(effect, true);
             }
         }
-        if (meta instanceof final BookMeta bookMeta) {
+        if (meta instanceof BookMeta) {
+            final BookMeta bookMeta = (BookMeta) meta;
             bookMeta.setTitle(book.getTitle());
             bookMeta.setAuthor(book.getAuthor());
             bookMeta.setPages(book.getText());
         }
+        /*
         if (meta instanceof SkullMeta) {
             head.populate((SkullMeta) meta, profile);
         }
-        if (meta instanceof final LeatherArmorMeta armorMeta) {
+         */
+        if (meta instanceof LeatherArmorMeta) {
+            final LeatherArmorMeta armorMeta = (LeatherArmorMeta) meta;
             armorMeta.setColor(color.get());
         }
         if (meta instanceof FireworkMeta) {
@@ -538,7 +561,8 @@ public class QuestItem {
             final List<FireworkEffect> list = firework.getEffects();
             fireworkMeta.setEffect(list.isEmpty() ? null : list.get(0));
         }
-        if (meta instanceof final Damageable damageableMeta) {
+        if (meta instanceof Damageable) {
+            final Damageable damageableMeta = (Damageable) meta;
             damageableMeta.setDamage(getDurability());
         }
         item.setItemMeta(meta);
@@ -619,21 +643,24 @@ public class QuestItem {
      * @return owner of the head, used independently of player ID and texture
      */
     public Profile getOwner() {
-        return head.getOwner(null);
+        //return head.getOwner(null);
+        return null;
     }
 
     /**
      * @return playerId of the head, used in combination with the texture
      */
     public UUID getPlayerId() {
-        return head.getPlayerId();
+        return null;
+        //return head.getPlayerId();
     }
 
     /**
      * @return texture URL of the head, used in combination with the player ID
      */
     public String getTexture() {
-        return head.getTexture();
+        return "";
+        //return head.getTexture();
     }
 
     /**

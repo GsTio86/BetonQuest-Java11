@@ -119,24 +119,32 @@ public class EventScheduling {
      * @param scheduler     instance of the scheduler
      * @param <S>           type of the schedule.
      */
-    public record ScheduleType<S extends Schedule>(Class<S> scheduleClass, Scheduler<S> scheduler) {
-        S newScheduleInstance(final ScheduleID scheduleID, final ConfigurationSection scheduleConfig)
-                throws InstructionParseException, InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException {
+    public static class ScheduleType<S extends Schedule> {
+        public final Class<S> scheduleClass;
+        public final Scheduler<S> scheduler;
+
+        public ScheduleType(Class<S> scheduleClass, Scheduler<S> scheduler) {
+            this.scheduleClass = scheduleClass;
+            this.scheduler = scheduler;
+        }
+
+        public S newScheduleInstance(ScheduleID scheduleID, ConfigurationSection scheduleConfig)
+            throws InstructionParseException, InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException {
             try {
                 return scheduleClass
-                        .getConstructor(ScheduleID.class, ConfigurationSection.class)
-                        .newInstance(scheduleID, scheduleConfig);
-            } catch (final InvocationTargetException e) {
-                if (e.getCause() instanceof final InstructionParseException cause) {
-                    throw cause;
+                    .getConstructor(ScheduleID.class, ConfigurationSection.class)
+                    .newInstance(scheduleID, scheduleConfig);
+            } catch (InvocationTargetException e) {
+                if (e.getCause() instanceof InstructionParseException) {
+                    throw (InstructionParseException)e.getCause();
                 } else {
                     throw e;
                 }
             }
         }
 
-        void createAndScheduleNewInstance(final ScheduleID scheduleID, final ConfigurationSection scheduleConfig)
-                throws InstructionParseException, InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException {
+        public void createAndScheduleNewInstance(ScheduleID scheduleID, ConfigurationSection scheduleConfig)
+            throws InstructionParseException, InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException {
             scheduler.addSchedule(newScheduleInstance(scheduleID, scheduleConfig));
         }
     }

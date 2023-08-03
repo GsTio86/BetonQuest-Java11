@@ -83,11 +83,14 @@ public class PointVariable extends Variable {
         if (point != null) {
             count = point.getCount();
         }
-        return switch (type) {
-            case AMOUNT -> Integer.toString(count);
-            case LEFT -> Integer.toString(amount - count);
-            default -> "";
-        };
+        switch (type) {
+            case AMOUNT:
+                return Integer.toString(count);
+            case LEFT:
+                return Integer.toString(amount - count);
+            default:
+                return "";
+        }
     }
 
     protected enum Type {

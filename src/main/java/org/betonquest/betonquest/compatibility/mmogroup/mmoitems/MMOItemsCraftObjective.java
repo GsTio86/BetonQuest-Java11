@@ -96,9 +96,9 @@ public class MMOItemsCraftObjective extends CountingObjective implements Listene
         if (containsPlayer(onlineProfile)
                 && action != StationAction.INTERACT_WITH_RECIPE
                 && action != StationAction.CANCEL_QUEUE
-                && usedRecipe instanceof final CraftingRecipe craftingRecipe
+                && usedRecipe instanceof CraftingRecipe
                 && checkConditions(onlineProfile)) {
-
+            final CraftingRecipe craftingRecipe = (CraftingRecipe) usedRecipe;
             final ItemStack craftedItem = craftingRecipe.getOutput().getItemStack(new FriendlyFeedbackProvider(FFPMMOItems.get()));
             if (isValidItem(craftedItem)) {
                 progressCraftObjective(onlineProfile, craftedItem.getAmount());

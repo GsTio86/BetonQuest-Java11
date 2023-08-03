@@ -90,11 +90,12 @@ public class CitizensVariable extends Variable {
             return "";
         }
 
-        return switch (key) {
-            case NAME -> npc.getName();
-            case FULL_NAME -> npc.getFullName();
-            case LOCATION -> location.getForLocation(npc.getStoredLocation());
-        };
+        switch (key) {
+            case NAME: return npc.getName();
+            case FULL_NAME: return npc.getFullName();
+            case LOCATION: return  location.getForLocation(npc.getStoredLocation());
+            default: return "";
+        }
     }
 
     /**

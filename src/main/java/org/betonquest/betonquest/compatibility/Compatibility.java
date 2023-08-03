@@ -45,6 +45,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 /**
  * Loads compatibility with other plugins.
@@ -103,7 +104,7 @@ public class Compatibility implements Listener {
      */
     public static List<String> getHooked() {
         return instance.integrators.entrySet().stream().filter(entry -> entry.getValue().getRight() != null)
-                .map(Map.Entry::getKey).toList();
+                .map(Map.Entry::getKey).collect(Collectors.toList());
     }
 
     /**

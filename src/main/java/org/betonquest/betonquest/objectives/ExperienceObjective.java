@@ -82,24 +82,24 @@ public class ExperienceObjective extends Objective implements Listener {
 
     @Override
     public String getProperty(final String name, final Profile profile) {
-        return switch (name.toLowerCase(Locale.ROOT)) {
-            case "amount" -> profile.getOnlineProfile()
+        switch (name.toLowerCase(Locale.ROOT)) {
+            case "amount": return profile.getOnlineProfile()
                     .map(OnlineProfile::getPlayer)
                     .map(player -> player.getLevel() + player.getExp())
                     .map(String::valueOf)
                     .orElse("");
-            case "left" -> {
+            case "left":
                 final double pAmount = amount.getDouble(profile);
-                yield profile.getOnlineProfile()
-                        .map(OnlineProfile::getPlayer)
-                        .map(player -> player.getLevel() + player.getExp())
-                        .map(exp -> pAmount - exp)
-                        .map(String::valueOf)
-                        .orElse("");
-            }
-            case "total" -> String.valueOf(amount.getDouble(profile));
-            default -> "";
-        };
+                return profile.getOnlineProfile()
+                .map(OnlineProfile::getPlayer)
+                .map(player -> player.getLevel() + player.getExp())
+                .map(exp -> pAmount - exp)
+                .map(String::valueOf)
+                .orElse("");
+
+            case "total": return String.valueOf(amount.getDouble(profile));
+            default: return "";
+        }
     }
 
     @EventHandler(ignoreCancelled = true, priority = EventPriority.MONITOR)

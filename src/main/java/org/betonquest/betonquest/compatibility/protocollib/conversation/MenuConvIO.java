@@ -47,6 +47,7 @@ import java.util.Map;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 @SuppressWarnings({"PMD.CyclomaticComplexity", "PMD.GodClass", "PMD.TooManyFields", "PMD.TooManyMethods",
@@ -134,7 +135,7 @@ public class MenuConvIO extends ChatConvIO {
 
         for (final QuestPackage pack : Stream.concat(
                 Config.getPackages().values().stream().filter(p -> p != conv.getPackage()),
-                Stream.of(conv.getPackage())).toList()) {
+                Stream.of(conv.getPackage())).collect(Collectors.toList())) {
             final ConfigurationSection section = pack.getConfig().getConfigurationSection("menu_conv_io");
             if (section == null) {
                 continue;
@@ -165,7 +166,7 @@ public class MenuConvIO extends ChatConvIO {
         try {
             for (final CONTROL control : Arrays.stream(configControlCancel.split(","))
                     .map(string -> string.toUpperCase(Locale.ROOT))
-                    .map(CONTROL::valueOf).toList()) {
+                    .map(CONTROL::valueOf).collect(Collectors.toList())) {
                 if (!controls.containsKey(control)) {
                     controls.put(control, ACTION.CANCEL);
                 }
@@ -176,7 +177,7 @@ public class MenuConvIO extends ChatConvIO {
         try {
             for (final CONTROL control : Arrays.stream(configControlSelect.split(","))
                     .map(string -> string.toUpperCase(Locale.ROOT))
-                    .map(CONTROL::valueOf).toList()) {
+                    .map(CONTROL::valueOf).collect(Collectors.toList())) {
 
                 if (!controls.containsKey(control)) {
                     controls.put(control, ACTION.SELECT);
@@ -188,7 +189,7 @@ public class MenuConvIO extends ChatConvIO {
         try {
             for (final CONTROL control : Arrays.stream(configControlMove.split(","))
                     .map(string -> string.toUpperCase(Locale.ROOT))
-                    .map(CONTROL::valueOf).toList()) {
+                    .map(CONTROL::valueOf).collect(Collectors.toList())) {
                 if (!controls.containsKey(control)) {
                     controls.put(control, ACTION.MOVE);
                 }
@@ -317,7 +318,7 @@ public class MenuConvIO extends ChatConvIO {
 
         final List<String> npcLines = Arrays.stream(LocalChatPaginator.wordWrap(
                         Utils.replaceReset(StringUtils.stripEnd(msgNpcText, "\n"), configNpcTextReset), configLineLength, configNpcWrap))
-                .toList();
+                .collect(Collectors.toList());
 
         // Provide for as many options as we can fit but if there is lots of npcLines we will reduce this as necessary
         // own to a minimum of 1.
@@ -367,7 +368,7 @@ public class MenuConvIO extends ChatConvIO {
 
                 optionLines = Arrays.stream(LocalChatPaginator.wordWrap(
                         Utils.replaceReset(StringUtils.stripEnd(optionText, "\n"), configOptionSelectedReset),
-                        configLineLength, configOptionSelectedWrap)).toList();
+                        configLineLength, configOptionSelectedWrap)).collect(Collectors.toList());
             } else {
                 final String optionText = configOptionText
                         .replace("{option_text}", options.get(optionIndex + 1))
@@ -375,7 +376,7 @@ public class MenuConvIO extends ChatConvIO {
 
                 optionLines = Arrays.stream(LocalChatPaginator.wordWrap(
                         Utils.replaceReset(StringUtils.stripEnd(optionText, "\n"), configOptionTextReset),
-                        configLineLength, configOptionWrap)).toList();
+                        configLineLength, configOptionWrap)).collect(Collectors.toList());
 
             }
 
@@ -703,21 +704,18 @@ public class MenuConvIO extends ChatConvIO {
 
     private void handleSteering() {
         switch (controls.get(CONTROL.LEFT_CLICK)) {
-            case CANCEL -> {
+            case CANCEL:
                 if (!conv.isMovementBlock()) {
                     conv.endConversation();
                 }
                 debounce = true;
-            }
-            case SELECT -> {
+                break;
+            case SELECT:
                 if (isOnCooldown()) {
                     return;
                 }
                 conv.passPlayerAnswer(selectedOption + 1);
                 debounce = true;
-            }
-            default -> {
-            }
         }
     }
 

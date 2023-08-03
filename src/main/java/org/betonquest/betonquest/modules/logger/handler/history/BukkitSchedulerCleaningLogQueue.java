@@ -5,7 +5,7 @@ import org.bukkit.scheduler.BukkitScheduler;
 import org.bukkit.scheduler.BukkitTask;
 
 import java.time.Duration;
-import java.time.InstantSource;
+import java.time.Instant;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.logging.LogRecord;
 
@@ -23,7 +23,7 @@ public class BukkitSchedulerCleaningLogQueue extends QueueBackedLogRecordQueue i
     /**
      * Instant source to get the current time when comparing {@link LogRecord}s.
      */
-    private final InstantSource instantSource;
+    private final Instant instantSource;
 
     /**
      * Create a log record queue cleaned by a bukkit scheduler. The scheduler will not be started until
@@ -32,7 +32,7 @@ public class BukkitSchedulerCleaningLogQueue extends QueueBackedLogRecordQueue i
      * @param instantSource instant source
      * @param validFor      duration that log records should be valid for
      */
-    public BukkitSchedulerCleaningLogQueue(final InstantSource instantSource, final Duration validFor) {
+    public BukkitSchedulerCleaningLogQueue(final Instant instantSource, final Duration validFor) {
         super(new ConcurrentLinkedQueue<>());
         this.validFor = validFor;
         this.instantSource = instantSource;
@@ -56,6 +56,6 @@ public class BukkitSchedulerCleaningLogQueue extends QueueBackedLogRecordQueue i
     }
 
     private boolean isExpired(final LogRecord record) {
-        return record != null && record.getInstant().isBefore(instantSource.instant().minus(validFor));
+        return record != null && record.getInstant().isBefore(instantSource.minus(validFor));
     }
 }

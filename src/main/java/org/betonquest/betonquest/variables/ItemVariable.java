@@ -71,18 +71,23 @@ public class ItemVariable extends Variable {
 
     @Override
     public String getValue(final Profile profile) {
-        return switch (type) {
-            case AMOUNT -> Integer.toString(itemAmount(profile));
-            case LEFT -> Integer.toString(amount - itemAmount(profile));
-            case NAME -> conditionalRaw(questItem.getName());
-            case LORE -> {
+        switch (type) {
+            case AMOUNT:
+                return Integer.toString(itemAmount(profile));
+            case LEFT:
+                return Integer.toString(amount - itemAmount(profile));
+            case NAME:
+                return conditionalRaw(questItem.getName());
+            case LORE:
                 try {
-                    yield conditionalRaw(questItem.getLore().get(amount));
-                } catch (final IndexOutOfBoundsException e) {
-                    yield "";
+                    return conditionalRaw(questItem.getLore().get(amount));
+                } catch (IndexOutOfBoundsException e) {
+                    return "";
                 }
-            }
-        };
+            default:
+                throw new IllegalArgumentException("Unknown type: " + type);
+        }
+
     }
 
     @SuppressFBWarnings("NP_NULL_ON_SOME_PATH_FROM_RETURN_VALUE")

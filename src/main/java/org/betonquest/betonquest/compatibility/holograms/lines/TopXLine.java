@@ -1,12 +1,9 @@
 package org.betonquest.betonquest.compatibility.holograms.lines;
 
-/**
- * Stores entry data of a {@link TopXObject}.
- *
- * @param playerName Name of player.
- * @param count      Value for point.
- */
-public record TopXLine(String playerName, long count) {
+
+public class TopXLine {
+    final String playerName;
+    final long count;
 
     /**
      * Creates a new instance of TopXLine
@@ -14,6 +11,8 @@ public record TopXLine(String playerName, long count) {
      * @param playerName Name of player
      * @param count      Value of point
      */
-    public TopXLine {
+    public TopXLine(String playerName, long count) {
+        this.playerName = playerName;
+        this.count = count;
     }
 }

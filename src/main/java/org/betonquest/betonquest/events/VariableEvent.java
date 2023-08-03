@@ -36,9 +36,10 @@ public class VariableEvent extends QuestEvent {
     @Override
     protected Void execute(final Profile profile) throws QuestRuntimeException {
         final Objective obj = BetonQuest.getInstance().getObjective(objectiveID);
-        if (!(obj instanceof final VariableObjective objective)) {
+        if (!(obj instanceof VariableObjective)) {
             throw new QuestRuntimeException(objectiveID.getFullID() + " is not a variable objective");
         }
+        final VariableObjective objective = (VariableObjective) obj;
         String keyReplaced = key;
         for (final String v : keyVariables) {
             keyReplaced = keyReplaced.replace(v, BetonQuest.getInstance().getVariableValue(

@@ -31,7 +31,8 @@ public class CitizensInventoryConvIO extends InventoryConvIO {
     @SuppressWarnings("PMD.AvoidAccessibilityAlteration")
     protected SkullMeta updateSkullMeta(final SkullMeta meta) {
         // this only applied to Citizens NPC conversations
-        if (conv instanceof final CitizensConversation citizensConv) {
+        if (conv instanceof CitizensConversation) {
+            final CitizensConversation citizensConv = (CitizensConversation) conv;
             if (Bukkit.isPrimaryThread()) {
                 throw new IllegalStateException("Must be called async!");
             }

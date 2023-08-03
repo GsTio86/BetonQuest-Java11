@@ -75,11 +75,11 @@ public class TimeEventFactory implements EventFactory, StaticEventFactory {
         if (timeString.isEmpty()) {
             throw new InstructionParseException("Time cannot be empty");
         }
-        return switch (timeString.charAt(0)) {
-            case '+' -> Time.ADD;
-            case '-' -> Time.SUBTRACT;
-            default -> Time.SET;
-        };
+        switch (timeString.charAt(0)) {
+            case '+': return Time.ADD;
+            case '-': return Time.SUBTRACT;
+            default: return Time.SET;
+        }
     }
 
     private Long parseTime(final String timeString) {

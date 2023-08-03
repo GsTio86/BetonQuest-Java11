@@ -83,13 +83,13 @@ public class WeatherEventFactory implements EventFactory, StaticEventFactory {
 
     @NotNull
     private Weather parseWeather(final String weatherName) throws InstructionParseException {
-        return switch (weatherName.toLowerCase(Locale.ROOT)) {
-            case "sun", "clear" -> Weather.SUN;
-            case "rain" -> Weather.RAIN;
-            case "storm" -> Weather.STORM;
-            default ->
-                    throw new InstructionParseException("Unknown weather state (valid options are: sun, clear, rain, storm): " + weatherName);
-        };
+        switch (weatherName.toLowerCase(Locale.ROOT)) {
+            case "clear": return Weather.SUN;
+            case "sun": return Weather.SUN;
+            case "rain": return Weather.RAIN;
+            case "storm": return Weather.STORM;
+            default: throw new InstructionParseException("Unknown weather state (valid options are: sun, clear, rain, storm): " + weatherName);
+        }
     }
 
     @NotNull

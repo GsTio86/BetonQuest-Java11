@@ -102,19 +102,28 @@ public class LocationVariable extends Variable {
     @SuppressWarnings("PMD.CyclomaticComplexity")
     @NotNull
     public String getForLocation(final Location location) {
-        return switch (mode) {
-            case XYZ -> buildFormattedLocation(location, buildPart(1) + " " + buildPart(2) + " " + buildPart(3));
-            case X -> buildFormattedLocation(location, buildPart(1));
-            case Y -> buildFormattedLocation(location, buildPart(2));
-            case Z -> buildFormattedLocation(location, buildPart(3));
-            case WORLD -> buildFormattedLocation(location, "%4$s");
-            case YAW -> buildFormattedLocation(location, buildPart(5));
-            case PITCH -> buildFormattedLocation(location, buildPart(6));
-            case ULF_SHORT ->
-                    buildFormattedLocation(location, buildPart(1) + ";" + buildPart(2) + ";" + buildPart(3) + ";" + "%4$s");
-            case ULF_LONG ->
-                    buildFormattedLocation(location, buildPart(1) + ";" + buildPart(2) + ";" + buildPart(3) + ";" + "%4$s" + ";" + buildPart(5) + ";" + buildPart(6));
-        };
+        switch (mode) {
+            case XYZ:
+                return buildFormattedLocation(location, buildPart(1) + " " + buildPart(2) + " " + buildPart(3));
+            case X:
+                return buildFormattedLocation(location, buildPart(1));
+            case Y:
+                return buildFormattedLocation(location, buildPart(2));
+            case Z:
+                return buildFormattedLocation(location, buildPart(3));
+            case WORLD:
+                return buildFormattedLocation(location, "%4$s");
+            case YAW:
+                return buildFormattedLocation(location, buildPart(5));
+            case PITCH:
+                return buildFormattedLocation(location, buildPart(6));
+            case ULF_SHORT:
+                return buildFormattedLocation(location, buildPart(1) + ";" + buildPart(2) + ";" + buildPart(3) + ";" + "%4$s");
+            case ULF_LONG:
+                return buildFormattedLocation(location, buildPart(1) + ";" + buildPart(2) + ";" + buildPart(3) + ";" + "%4$s" + ";" + buildPart(5) + ";" + buildPart(6));
+            default:
+                throw new IllegalArgumentException("Unknown mode: " + mode);
+        }
     }
 
     @SuppressFBWarnings("NP_NULL_ON_SOME_PATH_FROM_RETURN_VALUE")

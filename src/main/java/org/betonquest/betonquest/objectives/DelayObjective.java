@@ -128,12 +128,12 @@ public class DelayObjective extends Objective {
     @SuppressWarnings({"PMD.CyclomaticComplexity", "PMD.NPathComplexity", "PMD.CognitiveComplexity"})
     @Override
     public String getProperty(final String name, final Profile profile) {
-        return switch (name.toUpperCase(Locale.ROOT)) {
-            case "LEFT" -> parseVariableLeft(profile);
-            case "DATE" -> parseVariableDate(profile);
-            case "RAWSECONDS" -> parseVariableRawSeconds(profile);
-            default -> "";
-        };
+        switch (name.toUpperCase(Locale.ROOT)) {
+            case "LEFT": return parseVariableLeft(profile);
+            case "DATE": return  parseVariableDate(profile);
+            case "RAWSECONDS": return parseVariableRawSeconds(profile);
+            default: return "";
+        }
     }
 
     @SuppressWarnings({"PMD.CognitiveComplexity", "PMD.CyclomaticComplexity", "PMD.NPathComplexity", "PMD.AvoidLiteralsInIfCondition"})

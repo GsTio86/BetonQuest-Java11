@@ -402,28 +402,6 @@ public class ConfigurationSectionDecorator implements ConfigurationSection {
     }
 
     @Override
-    public @NotNull
-    List<String> getComments(@NotNull final String path) {
-        return original.getComments(path);
-    }
-
-    @Override
-    public @NotNull
-    List<String> getInlineComments(@NotNull final String path) {
-        return original.getInlineComments(path);
-    }
-
-    @Override
-    public void setComments(@NotNull final String path, @Nullable final List<String> comments) {
-        original.setComments(path, comments);
-    }
-
-    @Override
-    public void setInlineComments(@NotNull final String path, @Nullable final List<String> comments) {
-        original.setInlineComments(path, comments);
-    }
-
-    @Override
     public String toString() {
         final Configuration root = this.getRoot();
         return this.getClass().getSimpleName() + "[path='" + this.getCurrentPath() + "', root='" + (root == null ? null : root.getClass().getSimpleName()) + "']";

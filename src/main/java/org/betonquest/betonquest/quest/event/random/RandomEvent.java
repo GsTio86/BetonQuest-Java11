@@ -11,7 +11,14 @@ import org.betonquest.betonquest.id.EventID;
  * @param eventID the event to be executed
  * @param chance  the chance of the event
  */
-record RandomEvent(EventID eventID, VariableNumber chance) {
+public class RandomEvent {
+    public final EventID eventID;
+    public final VariableNumber chance;
+
+    public RandomEvent(EventID eventID, VariableNumber chance) {
+        this.eventID = eventID;
+        this.chance = chance;
+    }
 
     /**
      * Resolves the chance of the event.

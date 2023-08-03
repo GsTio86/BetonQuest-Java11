@@ -92,7 +92,8 @@ public class RegionObjective extends Objective implements Listener {
         qreHandler.handle(() -> {
             final List<Entity> passengers = event.getVehicle().getPassengers();
             for (final Entity passenger : passengers) {
-                if (passenger instanceof final Player player) {
+                if (passenger instanceof Player) {
+                    final Player player = (Player) passenger;
                     checkLocation(player, event.getTo());
                 }
             }

@@ -50,8 +50,7 @@ public class VariableCondition extends Condition {
             return resolvedVariable.matches(resolvedRegex);
         } catch (final PatternSyntaxException e) {
             final String variableAddress = this.instruction.getID().toString();
-            log.warn("Invalid regular expression '%s' used in variable condition '%s'. Error: %s"
-                    .formatted(e.getPattern(), variableAddress, e.getMessage()), e);
+            log.warn(String.format("Invalid regular expression '%s' used in variable condition '%s'. Error: %s" ,e.getPattern(), variableAddress, e.getMessage()), e);
             return false;
         }
     }

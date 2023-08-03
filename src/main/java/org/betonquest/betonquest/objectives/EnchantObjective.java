@@ -64,8 +64,8 @@ public class EnchantObjective extends CountingObjective implements Listener {
         int matches = 0;
 
         for (final EnchantmentData enchant : desiredEnchantments) {
-            final Enchantment desiredEnchant = enchant.enchantment();
-            final int desiredLevel = enchant.level();
+            final Enchantment desiredEnchant = enchant.enchantment;
+            final int desiredLevel = enchant.level;
 
             if (addedEnchants.containsKey(desiredEnchant)) {
                 final int addedLevel = addedEnchants.get(desiredEnchant);
@@ -93,7 +93,14 @@ public class EnchantObjective extends CountingObjective implements Listener {
      * @param enchantment the enchantment
      * @param level       the level
      */
-    public record EnchantmentData(Enchantment enchantment, int level) {
+    public static class EnchantmentData {
+        private final Enchantment enchantment;
+        private final int level;
+
+        public EnchantmentData(Enchantment enchantment, int level) {
+            this.enchantment = enchantment;
+            this.level = level;
+        }
 
         /**
          * Converts user input to an EnchantmentData object.
@@ -120,5 +127,6 @@ public class EnchantObjective extends CountingObjective implements Listener {
             }
             return new EnchantmentData(enchantment, level);
         }
+
     }
 }

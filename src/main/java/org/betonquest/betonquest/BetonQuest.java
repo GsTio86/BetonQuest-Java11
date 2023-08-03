@@ -287,7 +287,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
-import java.time.InstantSource;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -762,7 +762,7 @@ public class BetonQuest extends JavaPlugin {
             return;
         }
 
-        final HistoryHandler debugHistoryHandler = HandlerFactory.createHistoryHandler(this, this.getServer().getScheduler(), config, new File(getDataFolder(), "/logs"), InstantSource.system());
+        final HistoryHandler debugHistoryHandler = HandlerFactory.createHistoryHandler(this, this.getServer().getScheduler(), config, new File(getDataFolder(), "/logs"), Instant.now());
         registerLogHandler(getServer(), debugHistoryHandler);
         adventure = BukkitAudiences.create(this);
         final AccumulatingReceiverSelector receiverSelector = new AccumulatingReceiverSelector();
@@ -880,7 +880,7 @@ public class BetonQuest extends JavaPlugin {
         registerEvents("command", CommandEvent.class);
         registerEvent("tag", new TagPlayerEventFactory(this, getSaver()));
         registerEvent("globaltag", new TagGlobalEventFactory(this));
-        registerEvent("journal", new JournalEventFactory(loggerFactory.create(JournalEvent.class), this, InstantSource.system(), getSaver()));
+        registerEvent("journal", new JournalEventFactory(loggerFactory.create(JournalEvent.class), this, Instant.now(), getSaver()));
         registerNonStaticEvent("teleport", new TeleportEventFactory(loggerFactory.create(TeleportEvent.class), getServer(), getServer().getScheduler(), this));
         registerEvent("explosion", new ExplosionEventFactory(getServer(), getServer().getScheduler(), this));
         registerEvent("lightning", new LightningEventFactory(getServer(), getServer().getScheduler(), this));
@@ -1067,7 +1067,7 @@ public class BetonQuest extends JavaPlugin {
         final Version pluginVersion = new Version(this.getDescription().getVersion());
         final UpdaterConfig updaterConfig = new UpdaterConfig(loggerFactory.create(UpdaterConfig.class), config, pluginVersion, DEV_INDICATOR);
         updater = new Updater(loggerFactory.create(Updater.class), updaterConfig, pluginVersion, updateSourceHandler, updateDownloader,
-                this, getServer().getScheduler(), InstantSource.system());
+                this, getServer().getScheduler(), Instant.now());
     }
 
     @SuppressWarnings("PMD.DoNotUseThreads")

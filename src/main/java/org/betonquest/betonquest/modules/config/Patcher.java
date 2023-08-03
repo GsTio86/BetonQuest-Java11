@@ -180,7 +180,6 @@ public class Patcher {
 
     private void setConfigVersion(final String technicalDefaultVersion) {
         pluginConfig.set(CONFIG_VERSION_PATH, technicalDefaultVersion);
-        pluginConfig.setInlineComments(CONFIG_VERSION_PATH, List.of(VERSION_CONFIG_COMMENT));
     }
 
     @SuppressWarnings("PMD.AvoidLiteralsInIfCondition")

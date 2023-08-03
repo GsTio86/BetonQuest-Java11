@@ -62,9 +62,10 @@ public class DieObjective extends Objective implements Listener {
     @SuppressFBWarnings("NP_NULL_ON_SOME_PATH_FROM_RETURN_VALUE")
     @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
     public void onLastDamage(final EntityDamageEvent event) {
-        if (!cancel || !(event.getEntity() instanceof final Player player)) {
+        if (!cancel || !(event.getEntity() instanceof Player)) {
             return;
         }
+        final Player player = (Player) event.getEntity();
         final OnlineProfile onlineProfile = PlayerConverter.getID(player);
         if (containsPlayer(onlineProfile) && player.getHealth() - event.getFinalDamage() <= 0
                 && checkConditions(onlineProfile)) {

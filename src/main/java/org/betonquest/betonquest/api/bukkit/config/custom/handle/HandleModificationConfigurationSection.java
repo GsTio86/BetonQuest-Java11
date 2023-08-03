@@ -107,16 +107,6 @@ public class HandleModificationConfigurationSection extends ConfigurationSection
         handler.addDefault(original, path, value);
     }
 
-    @Override
-    public void setComments(@NotNull final String path, @Nullable final List<String> comments) {
-        handler.setComments(original, path, comments);
-    }
-
-    @Override
-    public void setInlineComments(@NotNull final String path, @Nullable final List<String> comments) {
-        handler.setInlineComments(original, path, comments);
-    }
-
     /**
      * Wraps a given object into an instance of this class.
      *

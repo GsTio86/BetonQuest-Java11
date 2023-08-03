@@ -86,7 +86,7 @@ public class BetonQuestPlaceholder extends PlaceholderExpansion {
         final String placeholderIdentifier;
         final int index = identifier.indexOf(':');
         if (index == -1) {
-            log.warn("Variable without explicit package requested through PAPI: '%s'".formatted(identifier));
+            log.warn(String.format("Variable without explicit package requested through PAPI: '%s'",identifier));
             return "";
         } else {
             pack = identifier.substring(0, index);

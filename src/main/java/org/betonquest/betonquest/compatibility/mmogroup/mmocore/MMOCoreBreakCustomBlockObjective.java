@@ -43,13 +43,16 @@ public class MMOCoreBreakCustomBlockObjective extends CountingObjective implemen
     private String getBlockId(final BlockType blockType) {
         String actualBlockId = null;
 
-        if (blockType instanceof final VanillaBlockType vanillaBlock) {
+        if (blockType instanceof VanillaBlockType) {
+            final VanillaBlockType vanillaBlock = (VanillaBlockType) blockType;
             actualBlockId = vanillaBlock.getType().toString();
 
-        } else if (blockType instanceof final MMOItemsBlockType mmoItemsBlock) {
+        } else if (blockType instanceof MMOItemsBlockType) {
+            final MMOItemsBlockType mmoItemsBlock = (MMOItemsBlockType) blockType;
             actualBlockId = String.valueOf(mmoItemsBlock.getBlockId());
 
-        } else if (blockType instanceof final SkullBlockType skullBlock) {
+        } else if (blockType instanceof SkullBlockType) {
+            final SkullBlockType skullBlock = (SkullBlockType) blockType;
             actualBlockId = skullBlock.getValue();
         }
         return actualBlockId;
