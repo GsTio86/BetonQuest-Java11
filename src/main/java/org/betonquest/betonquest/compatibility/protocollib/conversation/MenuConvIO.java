@@ -20,6 +20,7 @@ import org.betonquest.betonquest.api.profiles.OnlineProfile;
 import org.betonquest.betonquest.config.Config;
 import org.betonquest.betonquest.conversation.ChatConvIO;
 import org.betonquest.betonquest.conversation.Conversation;
+import org.betonquest.betonquest.conversation.ConversationState;
 import org.betonquest.betonquest.utils.LocalChatPaginator;
 import org.betonquest.betonquest.utils.Utils;
 import org.bukkit.Bukkit;
@@ -44,16 +45,17 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 @SuppressWarnings({"PMD.CyclomaticComplexity", "PMD.GodClass", "PMD.TooManyFields", "PMD.TooManyMethods",
-        "PMD.CommentRequired", "PMD.AvoidDuplicateLiterals"})
+    "PMD.CommentRequired", "PMD.AvoidDuplicateLiterals"})
 public class MenuConvIO extends ChatConvIO {
-    // Thread safety
+    /**
+     * Thread safety
+     */
     private final ReadWriteLock lock = new ReentrantReadWriteLock();
 
     /**
@@ -71,9 +73,8 @@ public class MenuConvIO extends ChatConvIO {
 
     protected int selectedOption;
 
-    protected AtomicBoolean started = new AtomicBoolean(false);
-
-    protected AtomicBoolean ended = new AtomicBoolean(false);
+    @SuppressWarnings("PMD.AvoidUsingVolatile")
+    protected volatile ConversationState state = ConversationState.CREATED;
 
     protected PacketAdapter packetAdapter;
 
@@ -134,8 +135,8 @@ public class MenuConvIO extends ChatConvIO {
         final BetonQuestLogger log = BetonQuest.getInstance().getLoggerFactory().create(getClass());
 
         for (final QuestPackage pack : Stream.concat(
-                Config.getPackages().values().stream().filter(p -> p != conv.getPackage()),
-                Stream.of(conv.getPackage())).collect(Collectors.toList())) {
+            Config.getPackages().values().stream().filter(p -> p != conv.getPackage()),
+            Stream.of(conv.getPackage())).collect(Collectors.toList())) {
             final ConfigurationSection section = pack.getConfig().getConfigurationSection("menu_conv_io");
             if (section == null) {
                 continue;
@@ -165,8 +166,8 @@ public class MenuConvIO extends ChatConvIO {
         // Sort out Controls
         try {
             for (final CONTROL control : Arrays.stream(configControlCancel.split(","))
-                    .map(string -> string.toUpperCase(Locale.ROOT))
-                    .map(CONTROL::valueOf).collect(Collectors.toList())) {
+                .map(string -> string.toUpperCase(Locale.ROOT))
+                .map(CONTROL::valueOf).collect(Collectors.toList())) {
                 if (!controls.containsKey(control)) {
                     controls.put(control, ACTION.CANCEL);
                 }
@@ -176,8 +177,8 @@ public class MenuConvIO extends ChatConvIO {
         }
         try {
             for (final CONTROL control : Arrays.stream(configControlSelect.split(","))
-                    .map(string -> string.toUpperCase(Locale.ROOT))
-                    .map(CONTROL::valueOf).collect(Collectors.toList())) {
+                .map(string -> string.toUpperCase(Locale.ROOT))
+                .map(CONTROL::valueOf).collect(Collectors.toList())) {
 
                 if (!controls.containsKey(control)) {
                     controls.put(control, ACTION.SELECT);
@@ -188,8 +189,8 @@ public class MenuConvIO extends ChatConvIO {
         }
         try {
             for (final CONTROL control : Arrays.stream(configControlMove.split(","))
-                    .map(string -> string.toUpperCase(Locale.ROOT))
-                    .map(CONTROL::valueOf).collect(Collectors.toList())) {
+                .map(string -> string.toUpperCase(Locale.ROOT))
+                .map(CONTROL::valueOf).collect(Collectors.toList())) {
                 if (!controls.containsKey(control)) {
                     controls.put(control, ACTION.MOVE);
                 }
@@ -201,16 +202,16 @@ public class MenuConvIO extends ChatConvIO {
 
     @SuppressWarnings("deprecation")
     private void start() {
-        if (hasStartedUnsafe()) {
+        if (state.isStarted()) {
             return;
         }
 
         lock.writeLock().lock();
         try {
-            if (hasStarted()) {
+            if (state.isStarted()) {
                 return;
             }
-            started.set(true);
+            state = ConversationState.ACTIVE;
 
             // Create something painful looking for the player to sit on and make it invisible.
             stand = player.getWorld().spawn(player.getLocation().clone().add(0, -1.1, 0), ArmorStand.class);
@@ -251,7 +252,7 @@ public class MenuConvIO extends ChatConvIO {
         }
 
         // Only want to hook the player when there are player options
-        if (!hasStarted() && options.size() > 0) {
+        if (!options.isEmpty()) {
             start();
         }
 
@@ -263,7 +264,7 @@ public class MenuConvIO extends ChatConvIO {
                 public void run() {
                     showDisplay();
 
-                    if (hasEnded()) {
+                    if (state.isEnded()) {
                         this.cancel();
                     }
                 }
@@ -295,7 +296,7 @@ public class MenuConvIO extends ChatConvIO {
     public void setNpcResponse(final String npcName, final String response) {
         super.setNpcResponse(npcName, response);
         formattedNpcName = configNpcNameFormat
-                .replace("{npc_name}", npcName);
+            .replace("{npc_name}", npcName);
     }
 
     protected void showDisplay() {
@@ -313,12 +314,12 @@ public class MenuConvIO extends ChatConvIO {
 
         // NPC Text
         final String msgNpcText = configNpcText
-                .replace("{npc_text}", npcText)
-                .replace("{npc_name}", npcName);
+            .replace("{npc_text}", npcText)
+            .replace("{npc_name}", npcName);
 
         final List<String> npcLines = Arrays.stream(LocalChatPaginator.wordWrap(
-                        Utils.replaceReset(StringUtils.stripEnd(msgNpcText, "\n"), configNpcTextReset), configLineLength, configNpcWrap))
-                .collect(Collectors.toList());
+                Utils.replaceReset(StringUtils.stripEnd(msgNpcText, "\n"), configNpcTextReset), configLineLength, configNpcWrap))
+            .collect(Collectors.toList());
 
         // Provide for as many options as we can fit but if there is lots of npcLines we will reduce this as necessary
         // own to a minimum of 1.
@@ -363,20 +364,20 @@ public class MenuConvIO extends ChatConvIO {
 
             if (i == 0) {
                 final String optionText = configOptionSelected
-                        .replace("{option_text}", options.get(optionIndex + 1))
-                        .replace("{npc_name}", npcName);
+                    .replace("{option_text}", options.get(optionIndex + 1))
+                    .replace("{npc_name}", npcName);
 
                 optionLines = Arrays.stream(LocalChatPaginator.wordWrap(
-                        Utils.replaceReset(StringUtils.stripEnd(optionText, "\n"), configOptionSelectedReset),
-                        configLineLength, configOptionSelectedWrap)).collect(Collectors.toList());
+                    Utils.replaceReset(StringUtils.stripEnd(optionText, "\n"), configOptionSelectedReset),
+                    configLineLength, configOptionSelectedWrap)).collect(Collectors.toList());
             } else {
                 final String optionText = configOptionText
-                        .replace("{option_text}", options.get(optionIndex + 1))
-                        .replace("{npc_name}", npcName);
+                    .replace("{option_text}", options.get(optionIndex + 1))
+                    .replace("{npc_name}", npcName);
 
                 optionLines = Arrays.stream(LocalChatPaginator.wordWrap(
-                        Utils.replaceReset(StringUtils.stripEnd(optionText, "\n"), configOptionTextReset),
-                        configLineLength, configOptionWrap)).collect(Collectors.toList());
+                    Utils.replaceReset(StringUtils.stripEnd(optionText, "\n"), configOptionTextReset),
+                    configLineLength, configOptionWrap)).collect(Collectors.toList());
 
             }
 
@@ -485,15 +486,15 @@ public class MenuConvIO extends ChatConvIO {
      */
     @Override
     public void end() {
-        if (hasEndedUnsafe()) {
+        if (state.isEnded()) {
             return;
         }
         lock.writeLock().lock();
         try {
-            if (hasEnded()) {
+            if (state.isEnded()) {
                 return;
             }
-            ended.set(true);
+            state = ConversationState.ENDED;
 
             if (packetAdapter != null) {
                 ProtocolLibrary.getProtocolManager().removePacketListener(packetAdapter);
@@ -520,8 +521,8 @@ public class MenuConvIO extends ChatConvIO {
     @SuppressWarnings({"PMD.NPathComplexity", "PMD.AvoidLiteralsInIfCondition", "PMD.CognitiveComplexity"})
     private PacketAdapter getPacketAdapter() {
         return new PacketAdapter(BetonQuest.getInstance(), ListenerPriority.HIGHEST,
-                PacketType.Play.Client.STEER_VEHICLE,
-                PacketType.Play.Server.ANIMATION
+            PacketType.Play.Client.STEER_VEHICLE,
+            PacketType.Play.Server.ANIMATION
         ) {
 
             @Override
@@ -611,13 +612,13 @@ public class MenuConvIO extends ChatConvIO {
     @SuppressWarnings("PMD.CollapsibleIfStatements")
     @EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
     public void playerInteractEvent(final PlayerInteractEvent event) {
-        if (!isActiveUnsafe()) {
+        if (state.isInactive()) {
             return;
         }
 
         lock.readLock().lock();
         try {
-            if (!isActive()) {
+            if (state.isInactive()) {
                 return;
             }
 
@@ -644,13 +645,13 @@ public class MenuConvIO extends ChatConvIO {
 
     @EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
     public void playerInteractEntityEvent(final PlayerInteractEntityEvent event) {
-        if (!isActiveUnsafe()) {
+        if (state.isInactive()) {
             return;
         }
 
         lock.readLock().lock();
         try {
-            if (!isActive()) {
+            if (state.isInactive()) {
                 return;
             }
 
@@ -674,13 +675,13 @@ public class MenuConvIO extends ChatConvIO {
 
     @EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
     public void entityDamageByEntityEvent(final EntityDamageByEntityEvent event) {
-        if (!isActiveUnsafe()) {
+        if (state.isInactive()) {
             return;
         }
 
         lock.readLock().lock();
         try {
-            if (!isActive()) {
+            if (state.isInactive()) {
                 return;
             }
 
@@ -732,13 +733,13 @@ public class MenuConvIO extends ChatConvIO {
     @SuppressWarnings("PMD.NPathComplexity")
     @EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
     public void playerItemHeldEvent(final PlayerItemHeldEvent event) {
-        if (!isActiveUnsafe()) {
+        if (state.isInactive()) {
             return;
         }
 
         lock.readLock().lock();
         try {
-            if (!isActive()) {
+            if (state.isInactive()) {
                 return;
             }
 
@@ -770,45 +771,6 @@ public class MenuConvIO extends ChatConvIO {
                 updateDisplay();
                 debounce = true;
             }
-        } finally {
-            lock.readLock().unlock();
-        }
-    }
-
-    private boolean isActiveUnsafe() {
-        return hasStarted() && !hasEnded();
-    }
-
-    private boolean isActive() {
-        lock.readLock().lock();
-        try {
-            return isActiveUnsafe();
-        } finally {
-            lock.readLock().unlock();
-        }
-    }
-
-    private boolean hasStartedUnsafe() {
-        return started.get();
-    }
-
-    private boolean hasStarted() {
-        lock.readLock().lock();
-        try {
-            return hasStartedUnsafe();
-        } finally {
-            lock.readLock().unlock();
-        }
-    }
-
-    private boolean hasEndedUnsafe() {
-        return ended.get();
-    }
-
-    private boolean hasEnded() {
-        lock.readLock().lock();
-        try {
-            return hasEndedUnsafe();
         } finally {
             lock.readLock().unlock();
         }
