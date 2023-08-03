@@ -60,8 +60,11 @@ public class EntityHider implements Listener {
                 PacketType.Play.Server.ENTITY_METADATA,
                 PacketType.Play.Server.ENTITY_EFFECT,
                 PacketType.Play.Server.REMOVE_ENTITY_EFFECT,
-                PacketType.Play.Server.BLOCK_BREAK_ANIMATION,
-                PacketType.Play.Server.PLAYER_COMBAT_KILL));
+                PacketType.Play.Server.BLOCK_BREAK_ANIMATION));
+
+        if (PaperLib.isVersion(17)) {
+            entityPackets.add(PacketType.Play.Server.PLAYER_COMBAT_KILL);
+        }
 
         // TODO version switch:
         //  Remove this code when only 1.19+ is supported
