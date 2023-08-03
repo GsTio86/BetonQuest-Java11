@@ -13,6 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 /**
  * Abstract class to help parsing of yml config files
@@ -76,7 +77,7 @@ public abstract class SimpleYMLSection {
         if (list.isEmpty()) {
             throw new Missing(key);
         } else {
-            return list.stream().map(this::resolveGlobalVariable).toList();
+            return list.stream().map(this::resolveGlobalVariable).collect(Collectors.toList());
         }
     }
 

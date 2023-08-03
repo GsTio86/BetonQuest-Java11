@@ -28,6 +28,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * A Item which Is displayed as option in a menu and has some events that are fired when item is clicked
@@ -294,7 +295,7 @@ public class MenuItem extends SimpleYMLSection {
             if (section.isConfigurationSection(CONFIG_TEXT)) {
                 descriptions.putAll(generateLanguageDescriptions(menuID, section));
             } else if (section.isString(CONFIG_TEXT)) {
-                descriptions.put(Config.getLanguage(), new ItemDescription(this.pack, getString(CONFIG_TEXT).lines().toList()));
+                descriptions.put(Config.getLanguage(), new ItemDescription(this.pack, getString(CONFIG_TEXT).lines().collect(Collectors.toList())));
             } else if (section.isList(CONFIG_TEXT)) {
                 descriptions.put(Config.getLanguage(), new ItemDescription(this.pack, getStringList(CONFIG_TEXT)));
             } else {
@@ -314,7 +315,7 @@ public class MenuItem extends SimpleYMLSection {
         if (textSection != null) {
             for (final String lang : textSection.getKeys(false)) {
                 if (section.isString(CONFIG_TEXT_PATH + lang)) {
-                    descriptions.put(lang, new ItemDescription(this.pack, getString(CONFIG_TEXT_PATH + lang).lines().toList()));
+                    descriptions.put(lang, new ItemDescription(this.pack, getString(CONFIG_TEXT_PATH + lang).lines().collect(Collectors.toList())));
                 } else if (section.isList(CONFIG_TEXT_PATH + lang)) {
                     descriptions.put(lang, new ItemDescription(this.pack, getStringList(CONFIG_TEXT_PATH + lang)));
                 } else {

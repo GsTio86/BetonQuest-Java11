@@ -16,6 +16,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * This is an implementation of {@link Quest}, that gets and applies templates.
@@ -91,7 +92,7 @@ public class QuestTemplate extends Quest {
 
         final List<QuestTemplate> templateConfigs = getOrderedQuestTemplates(questTemplates, templatePaths);
         templates.addAll(templatePaths);
-        templates.addAll(templateConfigs.stream().map(QuestTemplate::getTemplates).flatMap(List::stream).toList());
+        templates.addAll(templateConfigs.stream().map(QuestTemplate::getTemplates).flatMap(List::stream).collect(Collectors.toList()));
 
         final MultiConfiguration mergedTemplates = templateConfigs.stream()
                 .map(QuestTemplate::getConfig)
