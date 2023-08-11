@@ -11,7 +11,7 @@ import java.util.List;
  * Compares two {@link Version}s. This comparator can also be used to sort lists of {@link Version}s.
  */
 public class VersionComparator implements Comparator<Version>, Serializable {
-    
+
     private static final long serialVersionUID = 1641779671214600158L;
 
     /**

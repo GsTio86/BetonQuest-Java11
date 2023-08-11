@@ -112,17 +112,17 @@ public class EventScheduling {
         }
     }
 
-    /**
-     * Helper class that holds all implementations needed for a specific schedule type.
-     *
-     * @param scheduleClass class of the schedule
-     * @param scheduler     instance of the scheduler
-     * @param <S>           type of the schedule.
-     */
+
     public static class ScheduleType<S extends Schedule> {
         public final Class<S> scheduleClass;
         public final Scheduler<S> scheduler;
 
+        /**
+         * Helper class that holds all implementations needed for a specific schedule type.
+         *
+         * @param scheduleClass class of the schedule
+         * @param scheduler     instance of the scheduler
+         */
         public ScheduleType(Class<S> scheduleClass, Scheduler<S> scheduler) {
             this.scheduleClass = scheduleClass;
             this.scheduler = scheduler;

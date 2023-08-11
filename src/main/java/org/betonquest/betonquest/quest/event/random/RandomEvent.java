@@ -5,16 +5,16 @@ import org.betonquest.betonquest.api.profiles.Profile;
 import org.betonquest.betonquest.exceptions.QuestRuntimeException;
 import org.betonquest.betonquest.id.EventID;
 
-/**
- * Represents an event with its chance.
- *
- * @param eventID the event to be executed
- * @param chance  the chance of the event
- */
+
 public class RandomEvent {
     public final EventID eventID;
     public final VariableNumber chance;
-
+    /**
+     * Represents an event with its chance.
+     *
+     * @param eventID the event to be executed
+     * @param chance  the chance of the event
+     */
     public RandomEvent(EventID eventID, VariableNumber chance) {
         this.eventID = eventID;
         this.chance = chance;

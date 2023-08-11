@@ -72,7 +72,6 @@ public interface ConfigurationSectionModificationHandler {
     ConfigurationSection createSection(@NotNull ConfigurationSection section, @NotNull String path, @NotNull Map<?, ?> map);
 
     /**
-     * Handles the {@link ConfigurationSection#setComments(String, List)} method.
      *
      * @param section  The {@link ConfigurationSection} from which the method was called
      * @param path     The path to the section
@@ -81,7 +80,6 @@ public interface ConfigurationSectionModificationHandler {
     void setComments(@NotNull ConfigurationSection section, @NotNull String path, @Nullable List<String> comments);
 
     /**
-     * Handles the {@link ConfigurationSection#setInlineComments(String, List)} method.
      *
      * @param section  The {@link ConfigurationSection} from which the method was called
      * @param path     The path to the section

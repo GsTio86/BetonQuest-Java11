@@ -313,7 +313,7 @@ public abstract class SimpleYMLSection {
      * Thrown when the config could not be loaded due to an error
      */
     public class InvalidSimpleConfigException extends InvalidConfigurationException {
-        
+
         private static final long serialVersionUID = 5231741827329435199L;
 
         private final String message;
@@ -346,7 +346,7 @@ public abstract class SimpleYMLSection {
      * Thrown when a setting is missing
      */
     public class Missing extends InvalidSimpleConfigException {
-        
+
         private static final long serialVersionUID = 1827433702663413827L;
 
         public Missing(final String missingSetting) {
@@ -358,7 +358,7 @@ public abstract class SimpleYMLSection {
      * Thrown when a setting is invalid
      */
     public class Invalid extends InvalidSimpleConfigException {
-        
+
         private static final long serialVersionUID = -4898301219445719212L;
 
         public Invalid(final String invalidSetting) {

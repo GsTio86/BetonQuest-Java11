@@ -8,7 +8,7 @@ import org.bukkit.plugin.Plugin;
  * supported
  */
 public class UnsupportedVersionException extends HookException {
-    
+
     private static final long serialVersionUID = 7965553395053833302L;
 
     /**

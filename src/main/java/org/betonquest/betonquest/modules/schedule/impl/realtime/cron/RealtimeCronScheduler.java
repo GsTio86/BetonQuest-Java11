@@ -185,16 +185,16 @@ public class RealtimeCronScheduler extends ExecutorServiceScheduler<RealtimeCron
                 }, durationToNextRun.toMillis(), TimeUnit.MILLISECONDS));
     }
 
-    /**
-     * Helper class representing a single run of a schedule that was missed.
-     *
-     * @param schedule the schedule to which the missed run belongs
-     * @param runTime  the time when the missed run should have taken place.
-     */
+
     public class MissedRun {
         public final RealtimeCronSchedule schedule;
         public final ZonedDateTime runTime;
-
+        /**
+         * Helper class representing a single run of a schedule that was missed.
+         *
+         * @param schedule the schedule to which the missed run belongs
+         * @param runTime  the time when the missed run should have taken place.
+         */
         public MissedRun(final RealtimeCronSchedule schedule, final ZonedDateTime runTime) {
             this.schedule = schedule;
             this.runTime = runTime;

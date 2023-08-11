@@ -87,16 +87,16 @@ public class EnchantObjective extends CountingObjective implements Listener {
         HandlerList.unregisterAll(this);
     }
 
-    /**
-     * Represents an enchantment and its level.
-     *
-     * @param enchantment the enchantment
-     * @param level       the level
-     */
+
     public static class EnchantmentData {
         private final Enchantment enchantment;
         private final int level;
-
+        /**
+         * Represents an enchantment and its level.
+         *
+         * @param enchantment the enchantment
+         * @param level       the level
+         */
         public EnchantmentData(Enchantment enchantment, int level) {
             this.enchantment = enchantment;
             this.level = level;

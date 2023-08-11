@@ -5,7 +5,7 @@ package org.betonquest.betonquest.exceptions;
  * Exception thrown when the object couldn't be found.
  */
 public class ObjectNotFoundException extends Exception {
-    
+
     private static final long serialVersionUID = -6335789753445719198L;
 
     /**

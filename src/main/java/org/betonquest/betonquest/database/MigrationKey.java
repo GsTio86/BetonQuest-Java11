@@ -1,15 +1,15 @@
 package org.betonquest.betonquest.database;
 
-/**
- * Key for the migration with the information about the name and version.
- *
- * @param namespace name of the plugin
- * @param version   version of the migration
- */
+
 public class MigrationKey implements Comparable<MigrationKey> {
     private final String namespace;
     private final int version;
-
+    /**
+     * Key for the migration with the information about the name and version.
+     *
+     * @param namespace name of the plugin
+     * @param version   version of the migration
+     */
     public MigrationKey(String namespace, int version) {
         this.namespace = namespace;
         this.version = version;

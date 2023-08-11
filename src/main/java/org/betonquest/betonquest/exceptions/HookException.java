@@ -7,7 +7,7 @@ import org.bukkit.plugin.Plugin;
  * Thrown if BetonQuest tries to hook a plugin
  */
 public class HookException extends Exception {
-    
+
     private static final long serialVersionUID = 7965553395053833302L;
 
     /**

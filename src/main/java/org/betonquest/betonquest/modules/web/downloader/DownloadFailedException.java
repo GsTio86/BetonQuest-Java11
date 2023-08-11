@@ -6,7 +6,7 @@ package org.betonquest.betonquest.modules.web.downloader;
  * Causes could be GitHub API not responding, invalid repository names or already existing packages.
  */
 public class DownloadFailedException extends Exception {
-    
+
     private static final long serialVersionUID = 149829848798498784L;
 
     /**
