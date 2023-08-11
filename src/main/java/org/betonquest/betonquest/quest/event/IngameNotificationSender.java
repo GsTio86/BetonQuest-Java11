@@ -7,7 +7,7 @@ import org.betonquest.betonquest.config.Config;
 import org.betonquest.betonquest.exceptions.QuestRuntimeException;
 
 /**
- * Notification sender that sends notifications in the error category.
+ * Notification sender that sends ingame chat notifications to the player if they are online.
  */
 public class IngameNotificationSender implements NotificationSender {
     /**
@@ -16,7 +16,7 @@ public class IngameNotificationSender implements NotificationSender {
     private final BetonQuestLogger log;
 
     /**
-     * Message package to send the message from.
+     * Message name to fetch the localized message from the messages.yml config files.
      */
     private final String messageName;
 
@@ -42,7 +42,7 @@ public class IngameNotificationSender implements NotificationSender {
      * @param questPackage         quest package to send the message from
      * @param fullId               full ID of the message sending object
      * @param level                the notification level
-     * @param messageName          message package to send the message from
+     * @param messageName          identifier of the message to send
      * @param additionalCategories categories to send the message to
      */
     public IngameNotificationSender(final BetonQuestLogger log, final QuestPackage questPackage, final String fullId, final NotificationLevel level, final String messageName, final String... additionalCategories) {
