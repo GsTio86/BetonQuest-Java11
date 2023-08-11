@@ -41,6 +41,7 @@ public class PasteSchematicEvent extends QuestEvent {
     private final CompoundLocation loc;
 
     private final boolean noAir;
+    private final boolean copyEntity;
 
     private final File file;
 
@@ -67,6 +68,7 @@ public class PasteSchematicEvent extends QuestEvent {
             }
         }
         noAir = instruction.hasArgument("noair");
+        copyEntity = instruction.hasArgument("copyentity");
     }
 
     @Override
@@ -89,6 +91,7 @@ public class PasteSchematicEvent extends QuestEvent {
                         .createPaste(editSession)
                         .to(BukkitAdapter.asBlockVector(location))
                         .ignoreAirBlocks(noAir)
+                        .copyEntities(copyEntity)
                         .build();
 
                 Operations.complete(operation);
