@@ -10,13 +10,7 @@ import org.betonquest.betonquest.api.quest.event.StaticEventFactory;
 import org.betonquest.betonquest.database.Saver;
 import org.betonquest.betonquest.database.UpdateType;
 import org.betonquest.betonquest.exceptions.InstructionParseException;
-import org.betonquest.betonquest.quest.event.DatabaseSaverStaticEvent;
-import org.betonquest.betonquest.quest.event.DoNothingStaticEvent;
-import org.betonquest.betonquest.quest.event.InfoNotificationSender;
-import org.betonquest.betonquest.quest.event.NoNotificationSender;
-import org.betonquest.betonquest.quest.event.NotificationSender;
-import org.betonquest.betonquest.quest.event.OnlineProfileGroupStaticEventAdapter;
-import org.betonquest.betonquest.quest.event.SequentialStaticEvent;
+import org.betonquest.betonquest.quest.event.*;
 import org.betonquest.betonquest.utils.PlayerConverter;
 import org.betonquest.betonquest.utils.Utils;
 import org.jetbrains.annotations.NotNull;
@@ -51,6 +45,7 @@ public class JournalEventFactory implements EventFactory, StaticEventFactory {
     /**
      * Create the journal event factory.
      *
+     * @param log           logger to pass on
      * @param betonQuest    BetonQuest instance to pass on
      * @param instantSource instant source to pass on
      * @param saver         database saver to use
@@ -96,7 +91,7 @@ public class JournalEventFactory implements EventFactory, StaticEventFactory {
     private JournalEvent createJournalAddEvent(final Instruction instruction) throws InstructionParseException {
         final String entryName = Utils.addPackage(instruction.getPackage(), instruction.getPart(2));
         final JournalChanger journalChanger = new AddEntryJournalChanger(instantSource, entryName);
-        final NotificationSender notificationSender = new InfoNotificationSender(log, "new_journal_entry", instruction.getPackage(), instruction.getID().getFullID());
+        final NotificationSender notificationSender = new IngameNotificationSender(log, instruction.getPackage(), instruction.getID().getFullID(), NotificationLevel.INFO, "new_journal_entry");
         return new JournalEvent(betonQuest, journalChanger, notificationSender);
     }
 
