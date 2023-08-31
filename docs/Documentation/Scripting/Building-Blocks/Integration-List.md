@@ -11,7 +11,7 @@ In total @snippet:constants:totalIntegratedPluginsNumber@ plugins have dedicated
 
 BetonQuest hooks into other plugins by itself to provide more events, conditions and objectives or other features.  
 _AureliumSkills, Brewery, Citizens, DecentHolograms, Denizen, EffectLib, FakeBlock, Heroes, HolographicDisplays, JobsReborn, LuckPerms, Magic,
-mcMMO, MythicLib, MMOCore, MMOItems, MythicMobs, PlaceholderAPI, ProtocolLib, Quests, Shopkeepers, ProSkillAPI,
+mcMMO, MythicLib, MMOCore, MMOItems, MythicMobs, PlaceholderAPI, ProtocolLib, Quests, RedisChat, Shopkeepers, ProSkillAPI,
 Skript, Vault, WorldEdit, FastAsyncWorldEdit and WorldGuard._
 
 ## Provided by other plugins
@@ -1128,3 +1128,5 @@ To complete this objective you need to enter WorldGuard region with specified na
 objectives:
   deathZone: "region deathZone entry events:kill"
 ```
+## [RedisChat](https://emibergo.gitbook.io/redischat/)
+This integration stops the chat when a conversation starts and then resumes it when the conversation ends.
