@@ -113,7 +113,7 @@ This is useful if you want to give your log messages a prefix like `(Database)`.
 Mainly _PascalCase_ should be used for topics and they should be short and meaningful to the user. 
 
 ```java linenums="1"
-final BetonQuestLogger logger = loggerFactory.create(MyClass.class, "MyCustomTopic");
+final BetonQuestLoggerFactory loggerFactoryger = loggerFactory.create(MyClass.class, "MyCustomTopic");
 ```
 
 ## Using the BetonQuestLogger

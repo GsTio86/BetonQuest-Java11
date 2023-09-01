@@ -2,7 +2,7 @@ package org.betonquest.betonquest.quest.event.effect;
 
 import org.betonquest.betonquest.Instruction;
 import org.betonquest.betonquest.VariableNumber;
-import org.betonquest.betonquest.api.logger.BetonQuestLogger;
+import org.betonquest.betonquest.api.logger.BetonQuestLoggerFactory;
 import org.betonquest.betonquest.api.quest.event.Event;
 import org.betonquest.betonquest.api.quest.event.EventFactory;
 import org.betonquest.betonquest.exceptions.InstructionParseException;
@@ -18,9 +18,9 @@ import org.bukkit.scheduler.BukkitScheduler;
  */
 public class EffectEventFactory implements EventFactory {
     /**
-     * Custom {@link BetonQuestLogger} instance for this class.
+     * Logger factory to create a logger for events.
      */
-    private final BetonQuestLogger log;
+    private final BetonQuestLoggerFactory loggerFactory;
 
     /**
      * Server to use for syncing to the primary server thread.
@@ -44,8 +44,8 @@ public class EffectEventFactory implements EventFactory {
      * @param scheduler scheduler to use
      * @param plugin    plugin to use
      */
-    public EffectEventFactory(final BetonQuestLogger log, final Server server, final BukkitScheduler scheduler, final Plugin plugin) {
-        this.log = log;
+    public EffectEventFactory(final BetonQuestLoggerFactory loggerFactory, final Server server, final BukkitScheduler scheduler, final Plugin plugin) {
+        this.loggerFactory = loggerFactory;
         this.server = server;
         this.scheduler = scheduler;
         this.plugin = plugin;
@@ -64,7 +64,7 @@ public class EffectEventFactory implements EventFactory {
             final boolean hidden = instruction.hasArgument("hidden");
             final boolean icon = !instruction.hasArgument("noicon");
             return new PrimaryServerThreadEvent(new OnlineProfileRequiredEvent(
-                    log, new EffectEvent(effect, duration, amplifier, ambient, hidden, icon), instruction.getPackage()),
+                    loggerFactory.create(EffectEvent.class), new EffectEvent(effect, duration, amplifier, ambient, hidden, icon), instruction.getPackage()),
                     server, scheduler, plugin);
         } catch (final InstructionParseException e) {
             throw new InstructionParseException("Could not parse effect duration and amplifier", e);

@@ -2,7 +2,7 @@ package org.betonquest.betonquest.quest.event.journal;
 
 import org.betonquest.betonquest.BetonQuest;
 import org.betonquest.betonquest.Instruction;
-import org.betonquest.betonquest.api.logger.BetonQuestLogger;
+import org.betonquest.betonquest.api.logger.BetonQuestLoggerFactory;
 import org.betonquest.betonquest.api.quest.event.Event;
 import org.betonquest.betonquest.api.quest.event.EventFactory;
 import org.betonquest.betonquest.api.quest.event.StaticEvent;
@@ -23,9 +23,9 @@ import java.util.Locale;
  */
 public class JournalEventFactory implements EventFactory, StaticEventFactory {
     /**
-     * Custom {@link BetonQuestLogger} instance for this class.
+     * Logger factory to create a logger for events.
      */
-    private final BetonQuestLogger log;
+    private final BetonQuestLoggerFactory loggerFactory;
 
     /**
      * BetonQuest instance to provide to events.
@@ -45,13 +45,13 @@ public class JournalEventFactory implements EventFactory, StaticEventFactory {
     /**
      * Create the journal event factory.
      *
-     * @param log           logger to pass on
+     * @param loggerFactory           logger to pass on
      * @param betonQuest    BetonQuest instance to pass on
      * @param instantSource instant source to pass on
      * @param saver         database saver to use
      */
-    public JournalEventFactory(final BetonQuestLogger log, final BetonQuest betonQuest, final Instant instantSource, final Saver saver) {
-        this.log = log;
+    public JournalEventFactory(final BetonQuestLoggerFactory loggerFactory, final BetonQuest betonQuest, final Instant instantSource, final Saver saver) {
+        this.loggerFactory = loggerFactory;
         this.betonQuest = betonQuest;
         this.instantSource = instantSource;
         this.saver = saver;
@@ -91,7 +91,7 @@ public class JournalEventFactory implements EventFactory, StaticEventFactory {
     private JournalEvent createJournalAddEvent(final Instruction instruction) throws InstructionParseException {
         final String entryName = Utils.addPackage(instruction.getPackage(), instruction.getPart(2));
         final JournalChanger journalChanger = new AddEntryJournalChanger(instantSource, entryName);
-        final NotificationSender notificationSender = new IngameNotificationSender(log, instruction.getPackage(), instruction.getID().getFullID(), NotificationLevel.INFO, "new_journal_entry");
+        final NotificationSender notificationSender = new IngameNotificationSender(loggerFactory.create(JournalEvent.class), instruction.getPackage(), instruction.getID().getFullID(), NotificationLevel.INFO, "new_journal_entry");
         return new JournalEvent(betonQuest, journalChanger, notificationSender);
     }
 

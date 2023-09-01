@@ -1,7 +1,7 @@
 package org.betonquest.betonquest.quest.event.chat;
 
 import org.betonquest.betonquest.Instruction;
-import org.betonquest.betonquest.api.logger.BetonQuestLogger;
+import org.betonquest.betonquest.api.logger.BetonQuestLoggerFactory;
 import org.betonquest.betonquest.api.quest.event.Event;
 import org.betonquest.betonquest.api.quest.event.EventFactory;
 import org.betonquest.betonquest.exceptions.InstructionParseException;
@@ -16,9 +16,9 @@ import org.bukkit.scheduler.BukkitScheduler;
  */
 public class ChatEventFactory implements EventFactory {
     /**
-     * Custom {@link BetonQuestLogger} instance for this class.
+     * Logger factory to create a logger for events.
      */
-    private final BetonQuestLogger log;
+    private final BetonQuestLoggerFactory loggerFactory;
 
     /**
      * Server to use for syncing to the primary server thread.
@@ -42,8 +42,8 @@ public class ChatEventFactory implements EventFactory {
      * @param scheduler scheduler to use
      * @param plugin    plugin to use
      */
-    public ChatEventFactory(final BetonQuestLogger log, final Server server, final BukkitScheduler scheduler, final Plugin plugin) {
-        this.log = log;
+    public ChatEventFactory(final BetonQuestLoggerFactory loggerFactory, final Server server, final BukkitScheduler scheduler, final Plugin plugin) {
+        this.loggerFactory = loggerFactory;
         this.server = server;
         this.scheduler = scheduler;
         this.plugin = plugin;
@@ -55,7 +55,7 @@ public class ChatEventFactory implements EventFactory {
         final String[] messages = string.substring(string.indexOf(' ') + 1).split("\\|");
         return new PrimaryServerThreadEvent(
                 new OnlineProfileRequiredEvent(
-                        log, new ChatEvent(messages), instruction.getPackage()),
+                    loggerFactory.create(ChatEvent.class), new ChatEvent(messages), instruction.getPackage()),
                 server, scheduler, plugin
         );
     }
