@@ -33,6 +33,6 @@ public class PartyEventFactory implements EventFactory {
         final VariableNumber amount = instruction.getVarNum(instruction.getOptional("amount"));
         final ConditionID[] conditions = instruction.getList(instruction::getCondition).toArray(new ConditionID[0]);
         final EventID[] events = instruction.getList(instruction::getEvent).toArray(new EventID[0]);
-        return new OnlineProfileRequiredEvent(loggerFactory, new PartyEvent(range, amount, conditions, events), instruction.getPackage());
+        return new OnlineProfileRequiredEvent(loggerFactory.create(PartyEvent.class), new PartyEvent(range, amount, conditions, events), instruction.getPackage());
     }
 }
