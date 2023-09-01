@@ -62,7 +62,7 @@ public class AsyncSaver extends Thread implements Listener, Saver {
                         active = false;
                         wait();
                     } catch (final InterruptedException e) {
-                        log.error("There was a exception with SQL", e);
+                        log.warn("AsyncSaver got interrupted!");
                     }
                 }
             }
