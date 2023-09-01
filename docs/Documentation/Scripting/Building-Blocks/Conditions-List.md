@@ -245,6 +245,19 @@ This condition requires the player to have all specified items in his inventory 
     ```YAML
     item emerald:5,gold:10
     ```
+## Durability of item: `itemdurability`
+
+This condition requires the player to have a certain amount of durability on an item.
+The first argument is the slot, the second the amount.
+Optional `relative` argument sets 0 to broken and 1 to the maximum durability the item can have.
+This condition returns false when no item is in the given slot or does not have durability, like stone or sticks.
+Available slot types: `HAND`, `OFF_HAND`, `HEAD`, `CHEST`, `LEGS`, `FEET`.
+
+!!! example
+```YAML
+itemdurability HAND 50
+itemdurability CHEST 0.5 relative
+```
 
 ## Journal entry: `journal`
 
