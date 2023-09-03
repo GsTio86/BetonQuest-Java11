@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Puts the items in the inventory of a block or drops them if the inventory is full.
@@ -64,7 +65,7 @@ public class ChestGiveEvent implements Event {
      */
     private ItemStack[] getItemStacks(final Profile profile) {
         final List<ItemStack> itemStacks = new ArrayList<>();
-        Arrays.stream(questItems).toList().forEach(item -> {
+        Arrays.stream(questItems).collect(Collectors.toList()).forEach(item -> {
             final QuestItem questItem = item.getItem();
             int amount = item.getAmount().getInt(profile);
             while (amount > 0) {

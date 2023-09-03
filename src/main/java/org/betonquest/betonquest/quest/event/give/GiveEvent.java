@@ -13,6 +13,7 @@ import org.bukkit.inventory.ItemStack;
 
 import java.util.Arrays;
 import java.util.Locale;
+import java.util.stream.Collectors;
 
 /**
  * Gives the player items.
@@ -64,7 +65,7 @@ public class GiveEvent implements Event {
     @Override
     public void execute(final Profile profile) throws QuestRuntimeException {
         final Player player = profile.getOnlineProfile().get().getPlayer();
-        Arrays.stream(questItems).toList().forEach(item -> {
+        Arrays.stream(questItems).collect(Collectors.toList()).forEach(item -> {
             final QuestItem questItem = item.getItem();
             final int amount = item.getAmount().getInt(profile);
             giveItems(profile, player, questItem, amount);
